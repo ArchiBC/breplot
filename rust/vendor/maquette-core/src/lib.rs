@@ -1,0 +1,35 @@
+//! Format-agnostic rendering primitives shared by the maquette plugin family.
+//!
+//! Consumers — `maquette-gltf` (all of it) and the STL/OBJ/PLY `maquette`
+//! plugin (`color` + `fxaa` so far; the rest of its forked copies to follow) —
+//! provide a scene representation and shader; this crate provides the render
+//! primitives that stay the same regardless of asset format:
+//!
+//!   * [`math`] — Vec3, Mat3, Mat4, FxHasher.
+//!   * [`color`] — sRGB LUTs and colour helpers.
+//!   * [`rasterizer`] — triangle scan-conversion with 4-pixel SIMD interior,
+//!     scalar remainder, per-vertex attribute interp, z-buffer + WBOIT.
+//!   * [`shadow`] — per-light depth maps with PCF + PCSS.
+//!   * [`ssao`] — screen-space ambient occlusion (bilateral-blurred).
+//!   * [`fxaa`] — FXAA 3.11.
+//!   * [`ibl`] — procedural / photographic HDR IBL env with cosine-weighted
+//!     diffuse pre-convolution and seam-aware octahedral sampling.
+//!   * [`rgbe`] — Radiance HDR (.hdr) parser.
+//!   * [`texture`] — 2D texture with wrap/filter/mipmaps.
+//!
+//! Nothing in this crate references glTF, STL, PLY, or OBJ — pure geometry
+//! + shading primitives. JPEG/PNG/WebP decoding lives with the only consumer
+//! that needs it (`maquette-gltf::texture_decode`).
+
+pub mod bundle;
+pub mod color;
+pub mod fxaa;
+pub mod ibl;
+pub mod light;
+pub mod math;
+pub mod rasterizer;
+pub mod rgbe;
+pub mod shadow; #[cfg(not(target_arch = "wasm32"))] pub mod simd;
+pub mod ssao;
+pub mod texture;
+pub mod texture_decode;

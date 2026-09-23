@@ -1,0 +1,26 @@
+{
+  "degree": 3,
+  "knots": [0, 0, 0, 0, 0.45, 1, 1, 1, 1],
+  "control_points": [
+    [0, 0, 0],
+    [25, 38, 8],
+    [43, -5, 18],
+    [63, 48, -6],
+    [90, 18, 12]
+  ],
+  "direction": [1, 1, -1],
+  "up": [0, 0, 1],
+  "tolerance": 0.001,
+  "style": {
+    "stroke": "#195b8a",
+    "stroke_width": 0.4,
+    "show_control_points": true,
+    "show_control_polygon": true,
+    "show_axes": true,
+    "axis_length": 22,
+    "show_control_labels": true,
+    "control_polygon_stroke": "#9aa8b7",
+    "control_point_fill": "#d76839",
+    "control_point_radius": 0.9
+  }
+}

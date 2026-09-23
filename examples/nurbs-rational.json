@@ -1,0 +1,16 @@
+{
+  "degree": 2,
+  "knots": [0, 0, 0, 1, 1, 1],
+  "control_points": [[70, 0], [70, 70], [0, 70]],
+  "weights": [1, 0.7071067811865476, 1],
+  "tolerance": 0.01,
+  "style": {
+    "stroke": "#7250a4",
+    "stroke_width": 0.5,
+    "show_control_points": true,
+    "show_control_polygon": true,
+    "control_polygon_stroke": "#9aa8b7",
+    "control_point_fill": "#d76839",
+    "control_point_radius": 1
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "view": [35.264, 45, 0],
+  "deflection": 0.005,
+  "visibility_deflection": 0.001,
+  "surface_deflection": 0.02,
+  "max_segment_length": 0.5,
+  "surface_pixels": 1600,
+  "hidden": false,
+  "silhouette": false,
+  "surface": true,
+  "surface_mode": "raster",
+  "specular": 0.18
+}

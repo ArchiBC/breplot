@@ -1,0 +1,25 @@
+[package]
+name = "maquette-core"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Format-agnostic render primitives shared by the maquette plugin family (math, colour, SIMD rasterizer, SSAA/SSAO/FXAA, shadow maps, IBL env, HDR loader)."
+
+[lib]
+# Regular rlib — consumed by the plugin cdylibs.
+
+[dependencies]
+# Texture decoders — shared by the maquette family: glTF ships base/MR/normal/
+# occlusion/emissive maps and OBJ/MTL references PNG/JPEG (and WebP via
+# EXT_texture_webp) diffuse maps. Pure Rust, wasm-friendly. Output is always
+# RGBA8; sRGB→linear happens at sample time so each consumer picks the space.
+zune-jpeg = { version = "0.5", default-features = false, features = ["std"] }
+zune-png  = { version = "0.5", default-features = false, features = ["std"] }
+image-webp = "0.2"
+
+# Native-only SIMD backing for the `simd` shim (never pulled into wasm, which
+# keeps `std::arch::wasm32`).
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+wide = "1"
+bytemuck = "1"
+
