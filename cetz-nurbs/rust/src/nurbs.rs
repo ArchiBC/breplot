@@ -6,10 +6,22 @@ use brepkit_math::nurbs::curve::NurbsCurve;
 use brepkit_math::vec::Point3;
 use serde::Deserialize;
 
+#[derive(Clone, Copy, Debug, Default, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+pub enum KnotFormat {
+    #[default]
+    Full,
+    Rhino,
+}
+
 #[derive(Clone, Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct NurbsInput {
-    pub degree: usize,
-    /// Full, repeated, nondecreasing knot vector: length = points + degree + 1.
+    #[serde(default)]
+    pub degree: Option<usize>,
+    #[serde(default)]
+    pub knot_format: KnotFormat,
+    /// Repeated knots in the selected full or Rhino storage convention.
     pub knots: Vec<f64>,
     /// Each point is [x, y] or [x, y, z].
     pub control_points: Vec<Vec<f64>>,
@@ -37,6 +49,50 @@ fn default_direction() -> [f64; 3] {
 }
 fn default_up() -> [f64; 3] {
     [0.0, 1.0, 0.0]
+}
+
+#[cfg(test)]
+mod input_tests {
+    use super::*;
+
+    #[test]
+    fn full_and_rhino_infer_degree_without_altering_controls() {
+        let mut input: NurbsInput = serde_json::from_str(
+            r#"{
+            "knots":[0,0.1,0.2,0.3,0.5,0.7,0.8,0.9,1],
+            "control_points":[[0,0],[1,2],[2,-1],[3,3],[4,0]],
+            "weights":[1,0.8,1.2,1,0.9]
+        }"#,
+        )
+        .unwrap();
+        let full = input.curve().unwrap();
+        assert_eq!(full.degree(), 3);
+        input.knots = input.knots[1..input.knots.len() - 1].to_vec();
+        input.knot_format = KnotFormat::Rhino;
+        let rhino = input.curve().unwrap();
+        assert_eq!(full.control_points(), rhino.control_points());
+        assert_eq!(full.weights(), rhino.weights());
+        assert_eq!(full.domain(), rhino.domain());
+        for i in 0..=40 {
+            let u = 0.3 + i as f64 * 0.01;
+            assert!((full.evaluate(u) - rhino.evaluate(u)).length() < 1e-12);
+        }
+        input.degree = Some(2);
+        assert!(input.curve().err().unwrap().contains("conflicts"));
+    }
+
+    #[test]
+    fn core_rejects_constructor_flags_and_unknown_knot_formats() {
+        let input = serde_json::json!({"knots":[0,0,1,1], "control_points":[[0,0],[1,1]]});
+        for name in ["close", "closed", "periodic"] {
+            let mut invalid = input.clone();
+            invalid[name] = true.into();
+            assert!(serde_json::from_value::<NurbsInput>(invalid).is_err());
+        }
+        let mut invalid = input;
+        invalid["knot_format"] = "unknown".into();
+        assert!(serde_json::from_value::<NurbsInput>(invalid).is_err());
+    }
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -81,26 +137,20 @@ impl Default for CurveStyle {
 
 impl NurbsInput {
     pub fn curve(&self) -> Result<NurbsCurve, String> {
-        if !(1..=8).contains(&self.degree) {
-            return Err("degree must be between 1 and 8".into());
-        }
         let count = self.control_points.len();
-        if count < self.degree + 1 {
-            return Err("control_points must contain at least degree + 1 points".into());
+        let degree = match self.knot_format {
+            KnotFormat::Full => self.knots.len().checked_sub(count + 1),
+            KnotFormat::Rhino => (self.knots.len() + 1).checked_sub(count),
         }
-        if self.knots.len() != count + self.degree + 1 {
+        .filter(|p| (1..=8).contains(p))
+        .ok_or("knots and control_points must imply a degree between 1 and 8")?;
+        if self.degree.is_some_and(|explicit| explicit != degree) {
             return Err(format!(
-                "knots must have control_points.len() + degree + 1 = {} entries",
-                count + self.degree + 1
+                "degree conflicts with degree {degree} inferred from knots and control_points"
             ));
         }
-        if !self.knots.iter().all(|v| v.is_finite())
-            || self.knots.windows(2).any(|w| w[0] > w[1])
-            || self.knots[self.degree] >= self.knots[count]
-        {
-            return Err(
-                "knots must be finite, nondecreasing, and have a nonempty active domain".into(),
-            );
+        if count < degree + 1 {
+            return Err("control_points must contain at least degree + 1 points".into());
         }
         let points = self
             .control_points
@@ -124,8 +174,24 @@ impl NurbsInput {
             return Err("tolerance must be a positive finite model-unit distance".into());
         }
         self.style.validate()?;
-        NurbsCurve::new(self.degree, self.knots.clone(), points, weights)
-            .map_err(|e| format!("NURBS curve: {e}"))
+        let mut knots = self.knots.clone();
+        if self.knot_format == KnotFormat::Rhino {
+            // The two omitted outer knots do not affect the active curve,
+            // including non-clamped and periodic input. Do not modify controls.
+            let first = knots[0];
+            let last = *knots.last().unwrap();
+            knots.insert(0, first);
+            knots.push(last);
+        }
+        if !knots.iter().all(|v| v.is_finite())
+            || knots.windows(2).any(|w| w[0] > w[1])
+            || knots[degree] >= knots[count]
+        {
+            return Err(
+                "knots must be finite, nondecreasing, and have a nonempty active domain".into(),
+            );
+        }
+        NurbsCurve::new(degree, knots, points, weights).map_err(|e| format!("NURBS curve: {e}"))
     }
 }
 

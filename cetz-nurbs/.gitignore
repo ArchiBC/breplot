@@ -1,0 +1,4 @@
+/target/
+/rust/target/
+/package/cetz_nurbs.wasm
+/main.pdf

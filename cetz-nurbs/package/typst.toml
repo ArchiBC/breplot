@@ -1,0 +1,6 @@
+[package]
+name = "cetz-nurbs"
+version = "0.1.0"
+entrypoint = "lib.typ"
+compiler = "0.14.0"
+description = "2D and 3D NURBS curves for CeTZ."

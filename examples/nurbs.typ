@@ -1,4 +1,4 @@
-#import "../package/lib.typ": nurbs-curve
+#import "../cetz-nurbs/package/lib.typ": nurbs-curve
 
 #set page(margin: 18mm)
 #set text(font: "Arial", size: 10pt)

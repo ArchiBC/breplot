@@ -13,6 +13,7 @@ name = "breplot-cli"
 path = "src/main.rs"
 
 [dependencies]
+cetz-nurbs = { path = "../cetz-nurbs/rust", default-features = false }
 brepkit-io = "=3.4.18"
 brepkit-math = "=3.4.18"
 brepkit-operations = "=3.4.18"

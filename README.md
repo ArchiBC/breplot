@@ -1,8 +1,27 @@
 # breplot
 
-`breplot` 是给 NURBS/B-Rep 教材制作 Typst 技术插图的实验项目。输入 STEP 模型和正交视角，在 Typst 编译时生成带平滑曲面、高光与技术线条的插图；目标是让书中的视图可以随模型和视角参数一起重建。默认输出是**PNG 曲面 + Typst 原生 `curve` 边线**的混合图像。
+`breplot` 是面向 NURBS/B-Rep 教材的 Typst 技术插图实验项目。**目前主要实现与开发工作集中在 NURBS 曲线部分**，以独立的 [`cetz-nurbs`](cetz-nurbs/README.md) 包提供曲线构造、数学表示与 CeTZ 矢量绘制。STEP/B-Rep 部分保留已有实验链路，尚未完成通用模型与多视角的系统验证。
 
-## 现有演示
+## 当前重点：NURBS 曲线
+
+`cetz-nurbs` 可独立构建和使用，无需 STEP 模型或主项目的曲面渲染模块。当前实现包括：
+
+- 以节点向量、控制点和权重定义二维／三维 NURBS，支持完整节点形式与 Rhino 紧凑形式，并由数据长度推导次数。
+- 提供控制点曲线与内插点曲线两个构造接口，支持开放、位置闭合和周期形式。
+- 按节点区间提取齐次 Bézier 子段；非有理低次段精确转换为三次表示，一般有理段及高次段采用自适应三次逼近。
+- 通过 CeTZ 组合曲线、控制多边形及标注，并进行三维正交投影。交叉处按深度自动裁断后线的功能尚未实现。
+
+[`cetz-nurbs/main.typ`](cetz-nurbs/main.typ) 是曲线原理与实现的中文图解文章，涵盖 Bézier、齐次投影、节点与连续性、分段转换、整圆及周期曲线。构建后生成 `cetz-nurbs/main.pdf`。接口说明见[独立包 README](cetz-nurbs/README.md)，性能测量与复现方法见[性能报告](cetz-nurbs/benchmarks/README.md)。
+
+在仓库根目录使用 PowerShell 构建曲线包及文章：
+
+```powershell
+.\cetz-nurbs\scripts\build.ps1
+```
+
+## STEP/B-Rep 实验链路
+
+该部分输入 STEP 模型和正交视角，在 Typst 编译时生成**PNG 曲面 + Typst 原生 `curve` 边线**的混合图像，用于验证模型到教材插图的可复现流程。
 
 目前已有一条实际运行的 `STEP → Rust/WASM → Typst 原生曲线与 PNG` 链路。样例是 [`testdemo/demo.stp`](testdemo/demo.stp)，由 Rhino 8.35 导出，包含 6 个实体与 37 个面。
 
@@ -17,15 +36,15 @@ testdemo/demo.stp
 
 Rust 插件沿用 [Maquette](https://github.com/bernsteining/maquette) 的光栅器：Typst 用 `read(path, encoding: none)` 传入 STEP 字节；WASM 单次返回二进制封包，其中包含曲线 JSON 和曲面 PNG。Typst 直接用 `curve.cubic` 绘制可见边和隐藏边，`curve.line` 绘制视轮廓，`image(..., format: "png")` 嵌入曲面。遮挡算法借鉴 [Scenery 的线段区间裁剪](https://github.com/GiggleLiu/scenery/blob/main/scenery-engine/src/clip.rs)：每个挡住线段的三角形贡献一个参数区间，合并这些区间后切分可见线与隐藏线。高密度网格用于遮挡；较疏的显示网格交给 Maquette 的逐像素光栅器，插值法向量、使用深度缓冲并计算高光。普通边来自 B-Rep 拓扑边的原始曲线；NURBS 边按节点区间转 Bézier，其他解析边暂用自适应 Hermite 近似。遮挡裁剪使用短弦代理，显示曲线保留三次 Bézier。
 
-## 运行
+## STEP/B-Rep 构建与运行
 
-需要 Rust 1.96.0、`wasm32-unknown-unknown` target 和 Typst CLI。Windows PowerShell：
+需要 Rust 1.96.0、`wasm32-unknown-unknown` target 和 Typst 0.14+ CLI（曲线扩展使用 CeTZ 0.5.2）。Windows PowerShell：
 
 ```powershell
 .\scripts\build-demo.ps1
 ```
 
-脚本在 `rust/` 子项目运行单元测试并编译 WASM，生成编辑预览缓存，再编译根目录的 [`main.typ`](main.typ) 和 [`examples/`](examples/) 中的视图、隐藏线、平涂和 NURBS 示例。它还把包临时复制到 `target/typst-packages/local/breplot/0.1.0`，通过 `@local/breplot:0.1.0` 编译 [`examples/package-import.typ`](examples/package-import.typ)，验证清单入口。输出为 `target/main.png`、`target/demo.png`、`target/hidden.png`、`target/flat.png`、`target/nurbs.png` 和 `target/package-import.png`。WASM 文件、预览缓存及生成结果不纳入源码；直接运行 Typst 示例前需要先构建插件。
+脚本在 `rust/` 子项目运行单元测试并编译 WASM，生成编辑预览缓存，再编译根目录的 [`main.typ`](main.typ) 和 [`examples/`](examples/) 中的视图、隐藏线、平涂和 NURBS 示例。它还把包临时复制到 `target/typst-packages/local/breplot/0.1.0`，通过 `@local/breplot:0.1.0` 编译 [`examples/package-import.typ`](examples/package-import.typ)，验证两个独立包的清单入口。脚本也运行 `cetz-nurbs/scripts/build.ps1` 的独立测试和 CeTZ 组合示例。输出为 `target/main.png`、`target/demo.png`、`target/hidden.png`、`target/flat.png`、`target/nurbs.png` 和 `target/package-import.png`。WASM 文件、预览缓存及生成结果不纳入源码；直接运行 Typst 示例前需要先构建插件。
 
 目录按 Typst 包与 Rust 子项目划分：[`package/typst.toml`](package/typst.toml) 声明包名、版本和入口 [`package/lib.typ`](package/lib.typ)，WASM 构建后与入口同目录。根目录 `main.typ` 是可直接编译的演示文档，包含 STEP 视图与两种 NURBS 曲线；3D 示例还显示投影坐标轴、控制点编号、完整节点向量和世界坐标。它不是包入口，也没有声明为 Typst 模板。包本身仍处于本地演示阶段；公开分发前需处理下文所述的依赖许可证。
 
@@ -43,7 +62,7 @@ typst compile --input quality=cached main.typ target/main-preview.png
 typst compile --package-path target/typst-packages examples/package-import.typ target/package-import.png
 ```
 
-对应的 Typst 导入形式是 `#import "@local/breplot:0.1.0": step-view, nurbs-curve`；在自己的文档中使用时，需要把 `package/` 的五个文件（`typst.toml`、`lib.typ`、`step.typ`、`curve.typ`、构建后的 `breplot.wasm`）放到本地包目录 `local/breplot/0.1.0`。
+对应的 Typst 导入形式是 `#import "@local/breplot:0.1.0": step-view`；在自己的文档中使用时，需要把 `package/` 的四个文件（`typst.toml`、`lib.typ`、`step.typ`、构建后的 `breplot.wasm`）放到本地包目录 `local/breplot/0.1.0`。
 
 `step-view-data` 可绘制 CLI `cache` 命令生成的二进制图层封包，用于反复排版同一视角；普通 `step-view` 仍在每次编译时从 STEP 重新计算。两种方式都使用原生 Typst 曲线，缓存不含 SVG。
 
@@ -86,9 +105,11 @@ Typst 调用方式见 [`package/lib.typ`](package/lib.typ)。在使用方文档�
 
 `view: (x: ...deg, y: ...deg, z: ...deg)` 与 CeTZ `ortho` 的三个旋转角兼容，按 Z、Y、X 顺序作用于模型；若省略 `view`，仍可使用旧的 `direction`/`up` 相机参数。`deflection` 控制 Bézier 对原始边曲线的采样检查容差；`visibility_deflection` 控制遮挡网格密度；`surface_deflection` 控制着色网格与近似视轮廓的密度。`max_segment_length` 限制遮挡测试所用短弦的三维单段长度，**不限制显示 Bézier 段长**。这些长度都使用 STEP 模型单位，本样例单位是毫米。`surface_mode: "raster"` 使用直接嵌入的 PNG 平滑曲面；`"flat"` 用 Typst 原生三角面片作对照，编译更慢。`surface_pixels` 是曲面位图宽度，范围 256–4096。`specular` 控制高光强度，`hidden: true` 显示虚线隐藏边，`silhouette: true` 可显示网格近似的视轮廓。
 
-## 独立 NURBS 曲线模块
+## 独立 NURBS 插件 cetz-nurbs
 
-输入采用标准的**完整、重复节点向量**，不是“唯一节点 + 重数”压缩形式。`degree = p`、控制点数 `n` 时，`knots` 必须有 `n + p + 1` 个有限且非递减的数；有效参数域是 `[knots[p], knots[n]]`。支持非夹持节点向量，零长度节点区间跳过。控制点可写 `[x, y]` 或 `[x, y, z]`，权重省略时全为 1；显式权重必须与控制点等长且为正。当前支持 1–8 次曲线。
+曲线功能已迁移到 [`cetz-nurbs/`](cetz-nurbs/README.md)，具备独立 Typst 清单、Rust 内核、WASM、构建脚本和示例。`breplot` 的 Typst 入口只导出 STEP 功能；原 `nurbs-curve` 调用需改为从新包导入。直接在 CeTZ 画布中组合绘图请使用新包的 `nurbs` 函数，三维变换由 `draw.ortho` 处理。只需曲线时运行 `cetz-nurbs/scripts/build.ps1`，无需构建 STEP 插件。
+
+默认非周期输入采用标准的**完整、重复节点向量**，不是“唯一节点 + 重数”压缩形式。`degree = p`、控制点数 `n` 时，`knots` 必须有 `n + p + 1` 个有限且非递减的数；有效参数域是 `[knots[p], knots[n]]`。支持非夹持节点向量，零长度节点区间跳过。控制点可写 `[x, y]` 或 `[x, y, z]`，权重省略时全为 1；显式权重必须与控制点等长且为正。当前支持 1–8 次曲线。新包支持 `knot_format: "rhino"` 且可推导次数；`close` / `periodic` 仅用于两个点集构造扩展，基础 NURBS 数据不自动补点。规则与示例见 [`cetz-nurbs/main.typ`](cetz-nurbs/main.typ) 及其 README。
 
 [`examples/nurbs-polynomial.json`](examples/nurbs-polynomial.json) 展示 3D 三次曲线和控制结构；[`examples/nurbs-rational.json`](examples/nurbs-rational.json) 展示有理二次四分之一圆。原生命令：
 
@@ -99,7 +120,7 @@ cargo run --manifest-path rust/Cargo.toml --bin breplot-cli -- curve examples/nu
 Typst 可以直接传字典：
 
 ```typst
-#import "../package/lib.typ": nurbs-curve
+#import "../cetz-nurbs/package/lib.typ": nurbs-curve
 #let spec = (
   degree: 2,
   knots: (0, 0, 0, 1, 1, 1),
@@ -110,7 +131,7 @@ Typst 可以直接传字典：
 #nurbs-curve(spec, width: 65%)
 ```
 
-`view` 使用 CeTZ `ortho` 的角度字典，3D 默认 `(x: 35.264deg, y: 45deg, z: 0deg)`；2D 默认零旋转。3D 控制点先经正交仿射投影成 2D 控制点，**次数、节点向量、权重不变**，因此这一步得到的是精确的 2D NURBS 投影。`style` 支持 `stroke`、`stroke_width`、`opacity`、`dash`、`show_control_points`、`show_control_polygon`、`show_control_labels`、`show_axes`、`axis_length`、`control_polygon_stroke`、`control_point_fill`、`control_point_radius`。颜色使用 `#RRGGBB`；宽度、半径、虚线长度、`axis_length` 与 `tolerance` 都使用模型单位。`show_axes` 从世界原点绘制正向 X/Y/Z 轴，用同一视角投影到图面；`axis_length` 省略时取三维控制点包围盒最大尺寸的四分之一。控制点、控制多边形和坐标轴由 Typst 原生图元绘制，不改变曲线几何。
+`view` 使用 CeTZ `ortho` 的角度字典，3D 默认 `(x: 35.264deg, y: 45deg, z: 0deg)`；2D 默认零旋转。正交投影是仿射变换，不改变 NURBS 的次数、节点和权重。实现先生成世界坐标 Bézier，再由 CeTZ 投影，与投影控制点的数学关系一致。`style` 支持 `stroke`、`stroke_width`、`opacity`、`dash`、`show_control_points`、`show_control_polygon`、`show_control_labels`、`show_axes`、`axis_length`、`control_polygon_stroke`、`control_point_fill`、`control_point_radius`。颜色使用 `#RRGGBB`；宽度、半径、虚线长度、`axis_length` 与 `tolerance` 都使用模型单位。`show_axes` 从世界原点绘制正向 X/Y/Z 轴，用同一视角投影到图面；`axis_length` 省略时取三维控制点包围盒最大尺寸的四分之一。控制点、控制多边形和坐标轴由 CeTZ 绘制为 Typst 原生图元，不改变曲线几何。
 
 曲线模块先将每个非零节点区间提取为齐次 Bézier 段。非有理 1–3 次段精确升阶为 Typst 原生三次 `curve.cubic`；Typst 原生 `curve` 没有通用有理 Bézier 段，所以有理段及高于三次的段按 `tolerance` 自适应近似为三次 Bézier，不会输出密集折线。该容差用段内多个采样点检查，**不是严格的全局误差证明**；达到细分预算时会报错。CLI 保留旧 SVG 输出，用于单独导出与对照。
 
@@ -133,10 +154,13 @@ main.typ                  根目录演示入口，可直接编译
 package/typst.toml        Typst 包清单
 package/lib.typ           包入口；构建后加载同目录的 breplot.wasm
 package/step.typ          STEP 原生曲线、PNG 曲面与 CeTZ 视角
-package/curve.typ         NURBS 原生曲线与控制结构
+cetz-nurbs/package/      独立 CeTZ 扩展入口、清单与 NURBS WASM
+cetz-nurbs/main.typ      NURBS 原理与实现文章，构建后生成 main.pdf
+cetz-nurbs/benchmarks/   性能测试脚本、报告与测量数据
+cetz-nurbs/scripts/build.ps1 独立构建与 CeTZ 示例验证
 rust/Cargo.toml           Rust CLI 与 WASM 子项目
-rust/src/nurbs.rs         输入校验与节点区间齐次 Bézier 提取
-rust/src/curve_display.rs 非有理精确升阶、有理自适应显示；CLI 保留 SVG
+cetz-nurbs/rust/src/      输入校验、齐次 Bézier 提取与自适应三次显示
+rust/src/curve_display.rs 复用独立曲线内核；CLI 保留 SVG
 rust/src/camera.rs        STEP 与独立曲线共用的正交相机
 rust/src/                 其余 STEP 兼容处理、遮挡区间裁剪、平滑着色与原生曲线数据输出
 rust/vendor/maquette-core 固定版本的 WASM 光栅器，含 MIT 许可证
@@ -146,4 +170,4 @@ scripts/build-demo.ps1   构建并验证入口与示例
 scripts/refresh-preview.ps1 重新生成 Tinymist STEP 预览缓存
 ```
 
-下一步重点是处理光滑曲面的连续视轮廓、建立更多遮挡和曲线近似回归样例，并决定适合公开分发的依赖组合。项目缘起见[原始讨论](https://chatgpt.com/share/6ab3411e-7e30-83ea-8cee-c465fccd0bc9)。
+当前优先完善独立 NURBS 包的曲线构造、绘制性能与教材示例。STEP/B-Rep 部分仍需处理光滑曲面的连续视轮廓、补充不同模型与视角的遮挡回归验证，并确定公开分发所需的依赖与许可证方案。项目缘起见[原始讨论](https://chatgpt.com/share/6ab3411e-7e30-83ea-8cee-c465fccd0bc9)。

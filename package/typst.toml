@@ -2,4 +2,4 @@
 name = "breplot"
 version = "0.1.0"
 entrypoint = "lib.typ"
-description = "Render STEP/B-Rep views and NURBS curves in Typst."
+description = "Render STEP/B-Rep views in Typst."

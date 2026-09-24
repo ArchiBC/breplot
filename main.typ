@@ -1,4 +1,5 @@
-#import "package/lib.typ": step-view, step-view-data, nurbs-curve
+#import "package/lib.typ": step-view, step-view-data
+#import "cetz-nurbs/package/lib.typ": nurbs-curve
 
 #let preview-config = json("examples/step-preview.json")
 #let step-camera = (

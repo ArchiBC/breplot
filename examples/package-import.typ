@@ -1,4 +1,5 @@
-#import "@local/breplot:0.1.0": nurbs-curve
+#import "@local/cetz-nurbs:0.1.0": nurbs-curve
+#import "@local/breplot:0.1.0": step-view-data
 
 #set page(margin: 18mm)
 #set text(font: "Arial", size: 10pt)
@@ -15,3 +16,6 @@
   tolerance: 0.01,
 )
 #nurbs-curve(arc, width: 65%)
+
+独立的 breplot 包继续通过自己的入口读取 STEP 预览数据。
+#step-view-data(read("../target/preview-step.bin", encoding: none), width: 65%)

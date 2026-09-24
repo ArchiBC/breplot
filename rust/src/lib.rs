@@ -4,7 +4,6 @@ mod bezier;
 mod camera;
 mod curve_display;
 mod hlr;
-mod nurbs;
 mod raster;
 mod shade;
 mod step;
@@ -23,8 +22,9 @@ use hlr::{Point, Scene, Triangle};
 use serde::{Deserialize, Serialize};
 use shade::Facet;
 
-pub use curve_display::{native_cubics, render_nurbs};
-pub use nurbs::{CurveStyle, NurbsInput};
+pub use cetz_nurbs::display::native_cubics;
+pub use cetz_nurbs::nurbs::{CurveStyle, NurbsInput};
+pub use curve_display::render_nurbs;
 
 #[cfg(target_arch = "wasm32")]
 use wasm_minimal_protocol::*;
@@ -642,15 +642,6 @@ fn write_layer(
 fn render_step_native(step_bytes: &[u8], config_json: &[u8]) -> Result<Vec<u8>, String> {
     let config: Config = serde_json::from_slice(config_json).map_err(|e| format!("config: {e}"))?;
     render_step_data(step_bytes, &config)
-}
-
-#[cfg(target_arch = "wasm32")]
-#[wasm_func]
-fn nurbs_native_cubics(input_json: &[u8]) -> Result<Vec<u8>, String> {
-    let input: NurbsInput =
-        serde_json::from_slice(input_json).map_err(|e| format!("NURBS input: {e}"))?;
-    let cubics = curve_display::native_cubics(&input)?;
-    serde_json::to_vec(&cubics).map_err(|e| format!("encode NURBS cubics: {e}"))
 }
 
 #[cfg(test)]

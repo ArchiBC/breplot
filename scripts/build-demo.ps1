@@ -19,6 +19,8 @@ if (-not (Get-Command typst -ErrorAction SilentlyContinue)) {
     throw 'typst not found. Install the Typst CLI first.'
 }
 
+& (Join-Path $root 'cetz-nurbs\scripts\build.ps1')
+
 Push-Location -LiteralPath $rust
 try {
     & cargo test --lib
@@ -52,8 +54,10 @@ New-Item -ItemType Directory -Force -Path $localPackage | Out-Null
 Copy-Item -LiteralPath (Join-Path $root 'package\typst.toml') -Destination $localPackage -Force
 Copy-Item -LiteralPath (Join-Path $root 'package\lib.typ') -Destination $localPackage -Force
 Copy-Item -LiteralPath (Join-Path $root 'package\step.typ') -Destination $localPackage -Force
-Copy-Item -LiteralPath (Join-Path $root 'package\curve.typ') -Destination $localPackage -Force
 Copy-Item -LiteralPath (Join-Path $root 'package\breplot.wasm') -Destination $localPackage -Force
+$nurbsPackage = Join-Path $packageRoot 'local\cetz-nurbs\0.1.0'
+New-Item -ItemType Directory -Force -Path $nurbsPackage | Out-Null
+Copy-Item -Path (Join-Path $root 'cetz-nurbs\package\*') -Destination $nurbsPackage -Force
 & typst compile --root $root --package-path $packageRoot 'examples\package-import.typ' 'target\package-import.png'
 if ($LASTEXITCODE -ne 0) { throw 'Typst local package import failed.' }
 

@@ -1,0 +1,2142 @@
+{
+  "typst": "typst 0.15.1 (9dfd3a08)",
+  "wasm_sha256": "8c32720be8a4b1b02a4efdb3127294d039fae39eb3e4be27c5ce4ef8c975efde",
+  "repeats": 5,
+  "timeout_seconds": 30,
+  "clock": "time.perf_counter wall time; new process per sample",
+  "memory": "Windows process peak working set, MiB",
+  "cases": [
+    {
+      "name": "empty",
+      "warmup": {
+        "seconds": 0.19713780001620762,
+        "peak_mib": 20.609375,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.21318710001651198,
+          "peak_mib": 20.69140625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.20943779998924583,
+          "peak_mib": 20.64453125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2081095000030473,
+          "peak_mib": 20.7578125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.20775760000105947,
+          "peak_mib": 20.71875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.20064510000520386,
+          "peak_mib": 20.81640625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.2081095000030473,
+      "min_seconds": 0.20064510000520386,
+      "max_seconds": 0.21318710001651198,
+      "peak_mib": 20.81640625,
+      "pdf_bytes": 6426
+    },
+    {
+      "name": "imports",
+      "warmup": {
+        "seconds": 0.2477503000118304,
+        "peak_mib": 36.6171875,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.26082349999342114,
+          "peak_mib": 36.79296875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.24335980002069846,
+          "peak_mib": 36.57421875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2400253999803681,
+          "peak_mib": 36.64453125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.24230779998470098,
+          "peak_mib": 36.6875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2352940000128001,
+          "peak_mib": 36.6953125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.24230779998470098,
+      "min_seconds": 0.2352940000128001,
+      "max_seconds": 0.26082349999342114,
+      "peak_mib": 36.79296875,
+      "pdf_bytes": 17863
+    },
+    {
+      "name": "article_12_pages",
+      "warmup": {
+        "seconds": 0.6634216999809723,
+        "peak_mib": 147.984375,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.662129600008484,
+          "peak_mib": 147.81640625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.661738199996762,
+          "peak_mib": 145.921875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.6885992000170518,
+          "peak_mib": 146.796875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.6925472000148147,
+          "peak_mib": 148.1328125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.6508543999807443,
+          "peak_mib": 146.8359375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.662129600008484,
+      "min_seconds": 0.6508543999807443,
+      "max_seconds": 0.6925472000148147,
+      "peak_mib": 148.1328125,
+      "pdf_bytes": 358874
+    },
+    {
+      "name": "poly3_n8_eval",
+      "warmup": {
+        "seconds": 0.27292960000340827,
+        "peak_mib": 37.23828125,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.2285406999872066,
+          "peak_mib": 37.05859375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2821070000063628,
+          "peak_mib": 37.41796875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2761846999928821,
+          "peak_mib": 36.9765625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.23294529999839142,
+          "peak_mib": 37.3984375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.23288329999195412,
+          "peak_mib": 37.24609375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.23294529999839142,
+      "min_seconds": 0.2285406999872066,
+      "max_seconds": 0.2821070000063628,
+      "peak_mib": 37.41796875,
+      "pdf_bytes": 12296,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 5
+        }
+      ]
+    },
+    {
+      "name": "poly3_n32_eval",
+      "warmup": {
+        "seconds": 0.23840440000640228,
+        "peak_mib": 37.37890625,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.24018720001913607,
+          "peak_mib": 36.94921875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.26276189999771304,
+          "peak_mib": 37.30859375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.22469259999343194,
+          "peak_mib": 37.1328125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2752078000048641,
+          "peak_mib": 37.2421875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2370443000108935,
+          "peak_mib": 37.3359375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.24018720001913607,
+      "min_seconds": 0.22469259999343194,
+      "max_seconds": 0.2752078000048641,
+      "peak_mib": 37.3359375,
+      "pdf_bytes": 12828,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 29
+        }
+      ]
+    },
+    {
+      "name": "poly3_n128_eval",
+      "warmup": {
+        "seconds": 0.22782880000886507,
+        "peak_mib": 37.4765625,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.23712400000658818,
+          "peak_mib": 37.328125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2711907000048086,
+          "peak_mib": 37.7109375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2384586000116542,
+          "peak_mib": 37.5,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2727230000018608,
+          "peak_mib": 37.47265625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2800954999984242,
+          "peak_mib": 37.72265625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.2711907000048086,
+      "min_seconds": 0.23712400000658818,
+      "max_seconds": 0.2800954999984242,
+      "peak_mib": 37.72265625,
+      "pdf_bytes": 13021,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 125
+        }
+      ]
+    },
+    {
+      "name": "poly3_n512_eval",
+      "warmup": {
+        "seconds": 0.2569010999868624,
+        "peak_mib": 38.7421875,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.27016009998624213,
+          "peak_mib": 38.55078125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.26027719999547116,
+          "peak_mib": 38.2109375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2538967000145931,
+          "peak_mib": 38.21875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2604222999943886,
+          "peak_mib": 38.78125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.24173660000087693,
+          "peak_mib": 38.8359375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.26027719999547116,
+      "min_seconds": 0.24173660000087693,
+      "max_seconds": 0.27016009998624213,
+      "peak_mib": 38.8359375,
+      "pdf_bytes": 13184,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 509
+        }
+      ]
+    },
+    {
+      "name": "poly3_n1024_eval",
+      "warmup": {
+        "seconds": 0.25530930000240915,
+        "peak_mib": 39.33984375,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.2570619000180159,
+          "peak_mib": 39.3671875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.254317600018112,
+          "peak_mib": 39.33984375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2619501000153832,
+          "peak_mib": 39.40625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2567070000222884,
+          "peak_mib": 39.45703125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.25999579997733235,
+          "peak_mib": 39.30078125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.2570619000180159,
+      "min_seconds": 0.254317600018112,
+      "max_seconds": 0.2619501000153832,
+      "peak_mib": 39.45703125,
+      "pdf_bytes": 12972,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 1021
+        }
+      ]
+    },
+    {
+      "name": "poly3_n32_draw1",
+      "warmup": {
+        "seconds": 0.3195930999936536,
+        "peak_mib": 40.859375,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.3086984000110533,
+          "peak_mib": 41.29296875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2799537999962922,
+          "peak_mib": 41.1171875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.28439570000045933,
+          "peak_mib": 40.74609375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2716127999883611,
+          "peak_mib": 41.19921875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2744861000101082,
+          "peak_mib": 41.06640625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.2799537999962922,
+      "min_seconds": 0.2716127999883611,
+      "max_seconds": 0.3086984000110533,
+      "peak_mib": 41.29296875,
+      "pdf_bytes": 14356,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 29
+        }
+      ]
+    },
+    {
+      "name": "poly3_n32_draw10",
+      "warmup": {
+        "seconds": 0.4941720000060741,
+        "peak_mib": 62.0078125,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.5157658999960404,
+          "peak_mib": 61.68359375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.5441272000025492,
+          "peak_mib": 61.73046875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.5255388999939896,
+          "peak_mib": 61.7578125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.5162893999950029,
+          "peak_mib": 61.91015625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.5043184999958612,
+          "peak_mib": 62.0,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.5162893999950029,
+      "min_seconds": 0.5043184999958612,
+      "max_seconds": 0.5441272000025492,
+      "peak_mib": 62.0,
+      "pdf_bytes": 20424,
+      "counts": [
+        {
+          "curves": 10,
+          "segments": 290
+        }
+      ]
+    },
+    {
+      "name": "poly3_n32_draw100",
+      "warmup": {
+        "seconds": 2.788526099990122,
+        "peak_mib": 324.53125,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 2.891095500002848,
+          "peak_mib": 324.5703125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 2.7747918000095524,
+          "peak_mib": 324.85546875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 2.8472075999889057,
+          "peak_mib": 324.59765625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 2.862994700000854,
+          "peak_mib": 324.6171875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 2.8546965999994427,
+          "peak_mib": 324.6796875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 2.8546965999994427,
+      "min_seconds": 2.7747918000095524,
+      "max_seconds": 2.891095500002848,
+      "peak_mib": 324.85546875,
+      "pdf_bytes": 76883,
+      "counts": [
+        {
+          "curves": 100,
+          "segments": 2900
+        }
+      ]
+    },
+    {
+      "name": "poly3_n1024_draw",
+      "warmup": {
+        "seconds": 1.873071500012884,
+        "peak_mib": 171.7890625,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 1.9150920000101905,
+          "peak_mib": 172.2109375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 1.9204020999895874,
+          "peak_mib": 172.0,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 2.1965065999829676,
+          "peak_mib": 172.01953125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 2.0583246999885887,
+          "peak_mib": 172.4140625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 2.0244751000136603,
+          "peak_mib": 172.03515625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 2.0244751000136603,
+      "min_seconds": 1.9150920000101905,
+      "max_seconds": 2.1965065999829676,
+      "peak_mib": 172.4140625,
+      "pdf_bytes": 45192,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 1021
+        }
+      ]
+    },
+    {
+      "name": "rational_p3_n32_tol0.01",
+      "warmup": {
+        "seconds": 0.2894887000147719,
+        "peak_mib": 41.99609375,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.3316422999778297,
+          "peak_mib": 41.9765625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.33388389999163337,
+          "peak_mib": 41.82421875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2885266999946907,
+          "peak_mib": 41.99609375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.31495040000299923,
+          "peak_mib": 41.82421875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.28935160001856275,
+          "peak_mib": 41.91796875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.31495040000299923,
+      "min_seconds": 0.2885266999946907,
+      "max_seconds": 0.33388389999163337,
+      "peak_mib": 41.99609375,
+      "pdf_bytes": 14676,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 39
+        }
+      ]
+    },
+    {
+      "name": "rational_p3_n32_tol0.0001",
+      "warmup": {
+        "seconds": 0.3643737999955192,
+        "peak_mib": 45.765625,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.38729610000154935,
+          "peak_mib": 45.99609375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.3147902999771759,
+          "peak_mib": 45.98046875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.3273279000131879,
+          "peak_mib": 45.93359375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.3340748999908101,
+          "peak_mib": 45.62890625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.32320260000415146,
+          "peak_mib": 45.7421875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.3273279000131879,
+      "min_seconds": 0.3147902999771759,
+      "max_seconds": 0.38729610000154935,
+      "peak_mib": 45.99609375,
+      "pdf_bytes": 16839,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 116
+        }
+      ]
+    },
+    {
+      "name": "rational_p3_n32_tol1e-06",
+      "warmup": {
+        "seconds": 0.5097342999943066,
+        "peak_mib": 58.17578125,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.5345758000039496,
+          "peak_mib": 57.96484375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.5230741999985185,
+          "peak_mib": 58.03515625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.4999807999993209,
+          "peak_mib": 58.046875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.48589130002073944,
+          "peak_mib": 58.0234375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.49048449998372234,
+          "peak_mib": 57.953125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.4999807999993209,
+      "min_seconds": 0.48589130002073944,
+      "max_seconds": 0.5345758000039496,
+      "peak_mib": 58.046875,
+      "pdf_bytes": 25012,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 361
+        }
+      ]
+    },
+    {
+      "name": "rational_p5_n32_tol0.01",
+      "warmup": {
+        "seconds": 0.2717743999965023,
+        "peak_mib": 41.51171875,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.27498009998816997,
+          "peak_mib": 41.484375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.26902249999693595,
+          "peak_mib": 41.5625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2694261000142433,
+          "peak_mib": 41.1953125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.272428399999626,
+          "peak_mib": 41.140625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2689766999974381,
+          "peak_mib": 41.1796875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.2694261000142433,
+      "min_seconds": 0.2689766999974381,
+      "max_seconds": 0.27498009998816997,
+      "peak_mib": 41.5625,
+      "pdf_bytes": 14417,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 34
+        }
+      ]
+    },
+    {
+      "name": "rational_p5_n32_tol0.0001",
+      "warmup": {
+        "seconds": 0.3215137999795843,
+        "peak_mib": 45.28515625,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.32342920001246966,
+          "peak_mib": 45.19921875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.32390610000584275,
+          "peak_mib": 45.37890625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.3318052000249736,
+          "peak_mib": 45.0,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.3720622999826446,
+          "peak_mib": 45.08984375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.3483622999920044,
+          "peak_mib": 45.1015625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.3318052000249736,
+      "min_seconds": 0.32342920001246966,
+      "max_seconds": 0.3720622999826446,
+      "peak_mib": 45.37890625,
+      "pdf_bytes": 16839,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 102
+        }
+      ]
+    },
+    {
+      "name": "rational_p5_n32_tol1e-06",
+      "warmup": {
+        "seconds": 0.49995540000963956,
+        "peak_mib": 56.64453125,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.48706320000928827,
+          "peak_mib": 56.69921875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.4641752000025008,
+          "peak_mib": 56.51171875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.46949610000592656,
+          "peak_mib": 56.41796875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.4637554000073578,
+          "peak_mib": 56.69140625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.46727749999263324,
+          "peak_mib": 56.3359375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.46727749999263324,
+      "min_seconds": 0.4637554000073578,
+      "max_seconds": 0.48706320000928827,
+      "peak_mib": 56.69921875,
+      "pdf_bytes": 24182,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 338
+        }
+      ]
+    },
+    {
+      "name": "rational_p8_n32_tol0.01",
+      "warmup": {
+        "seconds": 0.288683899998432,
+        "peak_mib": 41.1484375,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.2903367000108119,
+          "peak_mib": 41.328125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2842625999765005,
+          "peak_mib": 40.984375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.28780220000771806,
+          "peak_mib": 41.23828125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.29172020000987686,
+          "peak_mib": 40.9921875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.28125070000533015,
+          "peak_mib": 41.08984375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.28780220000771806,
+      "min_seconds": 0.28125070000533015,
+      "max_seconds": 0.29172020000987686,
+      "peak_mib": 41.328125,
+      "pdf_bytes": 14142,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 31
+        }
+      ]
+    },
+    {
+      "name": "rational_p8_n32_tol0.0001",
+      "warmup": {
+        "seconds": 0.3839637000055518,
+        "peak_mib": 44.98046875,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.34605500000179745,
+          "peak_mib": 44.78515625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.3453158999909647,
+          "peak_mib": 44.7890625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.34372760000405833,
+          "peak_mib": 44.91796875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.33607219997793436,
+          "peak_mib": 44.734375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.3361952000122983,
+          "peak_mib": 44.88671875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.34372760000405833,
+      "min_seconds": 0.33607219997793436,
+      "max_seconds": 0.34605500000179745,
+      "peak_mib": 44.91796875,
+      "pdf_bytes": 16419,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 95
+        }
+      ]
+    },
+    {
+      "name": "rational_p8_n32_tol1e-06",
+      "warmup": {
+        "seconds": 0.4569238999974914,
+        "peak_mib": 55.7578125,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.4514354000275489,
+          "peak_mib": 55.89453125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.44467440000153147,
+          "peak_mib": 55.96484375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.4473868999921251,
+          "peak_mib": 55.5625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.43935239998972975,
+          "peak_mib": 55.8515625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.4801578000187874,
+          "peak_mib": 55.9765625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.4473868999921251,
+      "min_seconds": 0.43935239998972975,
+      "max_seconds": 0.4801578000187874,
+      "peak_mib": 55.9765625,
+      "pdf_bytes": 23376,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 317
+        }
+      ]
+    },
+    {
+      "name": "interpolate_n16_open",
+      "warmup": {
+        "seconds": 0.238753200013889,
+        "peak_mib": 37.12109375,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.23851339999237098,
+          "peak_mib": 37.0,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.23866510001244023,
+          "peak_mib": 37.51171875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2277567999844905,
+          "peak_mib": 37.4453125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.22919199999887496,
+          "peak_mib": 37.1484375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2457898999855388,
+          "peak_mib": 36.94140625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.23851339999237098,
+      "min_seconds": 0.2277567999844905,
+      "max_seconds": 0.2457898999855388,
+      "peak_mib": 37.51171875,
+      "pdf_bytes": 12543,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 13
+        }
+      ]
+    },
+    {
+      "name": "interpolate_n64_open",
+      "warmup": {
+        "seconds": 0.2546321999980137,
+        "peak_mib": 37.640625,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.2534066000080202,
+          "peak_mib": 37.1640625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.25055790002807043,
+          "peak_mib": 37.27734375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2884510000003502,
+          "peak_mib": 37.3203125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2865762999863364,
+          "peak_mib": 37.33984375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.253282699995907,
+          "peak_mib": 37.625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.2534066000080202,
+      "min_seconds": 0.25055790002807043,
+      "max_seconds": 0.2884510000003502,
+      "peak_mib": 37.625,
+      "pdf_bytes": 12544,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 61
+        }
+      ]
+    },
+    {
+      "name": "interpolate_n128_open",
+      "warmup": {
+        "seconds": 0.279050900018774,
+        "peak_mib": 37.88671875,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.2650046999915503,
+          "peak_mib": 37.6875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2602064000093378,
+          "peak_mib": 38.01953125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2614587999996729,
+          "peak_mib": 37.578125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2701556999818422,
+          "peak_mib": 37.94921875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2659716999914963,
+          "peak_mib": 37.87109375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.2650046999915503,
+      "min_seconds": 0.2602064000093378,
+      "max_seconds": 0.2701556999818422,
+      "peak_mib": 38.01953125,
+      "pdf_bytes": 13021,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 125
+        }
+      ]
+    },
+    {
+      "name": "interpolate_n256_open",
+      "warmup": {
+        "seconds": 0.4244462999922689,
+        "peak_mib": 38.58984375,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.43613029998959973,
+          "peak_mib": 38.71875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.4146080999926198,
+          "peak_mib": 39.05859375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.426303000014741,
+          "peak_mib": 38.984375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.42146510002203286,
+          "peak_mib": 38.72265625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.4334052000194788,
+          "peak_mib": 38.6875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.426303000014741,
+      "min_seconds": 0.4146080999926198,
+      "max_seconds": 0.43613029998959973,
+      "peak_mib": 39.05859375,
+      "pdf_bytes": 13209,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 253
+        }
+      ]
+    },
+    {
+      "name": "interpolate_n512_open",
+      "warmup": {
+        "seconds": 1.7325508999929298,
+        "peak_mib": 42.42578125,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 1.6938769999833312,
+          "peak_mib": 42.25,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 1.6866687999863643,
+          "peak_mib": 42.09765625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 1.7023016000166535,
+          "peak_mib": 42.15625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 1.714933099981863,
+          "peak_mib": 42.0,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 1.7806149999960326,
+          "peak_mib": 42.3984375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 1.7023016000166535,
+      "min_seconds": 1.6866687999863643,
+      "max_seconds": 1.7806149999960326,
+      "peak_mib": 42.3984375,
+      "pdf_bytes": 13184,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 509
+        }
+      ]
+    },
+    {
+      "name": "interpolate_n16_periodic",
+      "warmup": {
+        "seconds": 0.23944989999290556,
+        "peak_mib": 37.22265625,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.2423216000024695,
+          "peak_mib": 37.31640625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.23825349999242462,
+          "peak_mib": 37.3515625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.23805399998673238,
+          "peak_mib": 37.21875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.24020390000077896,
+          "peak_mib": 37.109375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.24971679999725893,
+          "peak_mib": 37.359375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.24020390000077896,
+      "min_seconds": 0.23805399998673238,
+      "max_seconds": 0.24971679999725893,
+      "peak_mib": 37.359375,
+      "pdf_bytes": 12533,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 16
+        }
+      ]
+    },
+    {
+      "name": "interpolate_n64_periodic",
+      "warmup": {
+        "seconds": 0.2577282000274863,
+        "peak_mib": 37.15234375,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.263438700028928,
+          "peak_mib": 37.16796875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2543627999839373,
+          "peak_mib": 37.40234375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.30339320001075976,
+          "peak_mib": 37.44921875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.25772749999305233,
+          "peak_mib": 37.37109375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2618330999976024,
+          "peak_mib": 37.42578125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.2618330999976024,
+      "min_seconds": 0.2543627999839373,
+      "max_seconds": 0.30339320001075976,
+      "peak_mib": 37.44921875,
+      "pdf_bytes": 12732,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 64
+        }
+      ]
+    },
+    {
+      "name": "interpolate_n128_periodic",
+      "warmup": {
+        "seconds": 0.27692069998010993,
+        "peak_mib": 37.76953125,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.2658647999924142,
+          "peak_mib": 37.5234375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.25625059998128563,
+          "peak_mib": 37.56640625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2586083000060171,
+          "peak_mib": 37.77734375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.2890985000121873,
+          "peak_mib": 38.09375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.24965719997999258,
+          "peak_mib": 37.6328125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.2586083000060171,
+      "min_seconds": 0.24965719997999258,
+      "max_seconds": 0.2890985000121873,
+      "peak_mib": 38.09375,
+      "pdf_bytes": 13118,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 128
+        }
+      ]
+    },
+    {
+      "name": "interpolate_n256_periodic",
+      "warmup": {
+        "seconds": 0.4224190999811981,
+        "peak_mib": 38.77734375,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.42234399999142624,
+          "peak_mib": 38.8125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.4161962000071071,
+          "peak_mib": 38.83984375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.41829620001954027,
+          "peak_mib": 39.2421875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.4153121999988798,
+          "peak_mib": 38.70703125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.4187402999959886,
+          "peak_mib": 39.15234375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.41829620001954027,
+      "min_seconds": 0.4153121999988798,
+      "max_seconds": 0.42234399999142624,
+      "peak_mib": 39.2421875,
+      "pdf_bytes": 13233,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 256
+        }
+      ]
+    },
+    {
+      "name": "interpolate_n512_periodic",
+      "warmup": {
+        "seconds": 1.7274132000165991,
+        "peak_mib": 42.1640625,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 1.6975688000093214,
+          "peak_mib": 42.19140625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 1.6381014000216965,
+          "peak_mib": 42.2578125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 1.674495899991598,
+          "peak_mib": 42.2421875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 1.6802047000091989,
+          "peak_mib": 42.26171875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 1.6943640999961644,
+          "peak_mib": 42.4921875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 1.6802047000091989,
+      "min_seconds": 1.6381014000216965,
+      "max_seconds": 1.6975688000093214,
+      "peak_mib": 42.4921875,
+      "pdf_bytes": 13023,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 512
+        }
+      ]
+    },
+    {
+      "name": "from-control-points_n128_draw",
+      "warmup": {
+        "seconds": 0.3526259000063874,
+        "peak_mib": 49.21484375,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.3511405999888666,
+          "peak_mib": 49.04296875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.3528109000180848,
+          "peak_mib": 49.2578125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.34761060000164434,
+          "peak_mib": 48.9453125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.354819200001657,
+          "peak_mib": 48.80859375,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.35213760001352057,
+          "peak_mib": 48.8671875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.35213760001352057,
+      "min_seconds": 0.34761060000164434,
+      "max_seconds": 0.354819200001657,
+      "peak_mib": 49.2578125,
+      "pdf_bytes": 17527,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 125
+        }
+      ]
+    },
+    {
+      "name": "from-interpolation-points_n128_draw",
+      "warmup": {
+        "seconds": 0.38087339999037795,
+        "peak_mib": 49.01953125,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 0.39691250000032596,
+          "peak_mib": 49.4453125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.38859230000525713,
+          "peak_mib": 48.9296875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.39750459999777377,
+          "peak_mib": 49.34765625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.38940980000188574,
+          "peak_mib": 49.39453125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 0.39511929999571294,
+          "peak_mib": 49.19140625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 0.39511929999571294,
+      "min_seconds": 0.38859230000525713,
+      "max_seconds": 0.39750459999777377,
+      "peak_mib": 49.4453125,
+      "pdf_bytes": 17519,
+      "counts": [
+        {
+          "curves": 1,
+          "segments": 125
+        }
+      ]
+    },
+    {
+      "name": "poly3_n32_shared100",
+      "warmup": {
+        "seconds": 2.729733699990902,
+        "peak_mib": 321.328125,
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "samples": [
+        {
+          "seconds": 2.755330399988452,
+          "peak_mib": 321.48046875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 2.7231649000023026,
+          "peak_mib": 321.1640625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 2.6865025000006426,
+          "peak_mib": 320.98828125,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 2.7737869000120554,
+          "peak_mib": 321.671875,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "seconds": 2.7510804000194184,
+          "peak_mib": 320.94140625,
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "median_seconds": 2.7510804000194184,
+      "min_seconds": 2.6865025000006426,
+      "max_seconds": 2.7737869000120554,
+      "peak_mib": 321.671875,
+      "pdf_bytes": 76707,
+      "counts": [
+        {
+          "curves": 100,
+          "segments": 2900
+        }
+      ]
+    }
+  ],
+  "native": [
+    {
+      "case": "poly3_n8",
+      "max_us": 4.88700581537409,
+      "median_us": 3.9999320027198912,
+      "min_us": 3.8093745238458023,
+      "output_count": 5
+    },
+    {
+      "case": "poly3_n32",
+      "max_us": 20.76636212624585,
+      "median_us": 19.803444862403484,
+      "min_us": 19.64346886662738,
+      "output_count": 29
+    },
+    {
+      "case": "poly3_n128",
+      "max_us": 93.67013108614232,
+      "median_us": 88.19232804232804,
+      "min_us": 82.14778325123153,
+      "output_count": 125
+    },
+    {
+      "case": "poly3_n512",
+      "max_us": 458.79587155963304,
+      "median_us": 402.7839357429719,
+      "min_us": 334.74916387959865,
+      "output_count": 509
+    },
+    {
+      "case": "poly3_n1024",
+      "max_us": 696.98125,
+      "median_us": 677.1202702702703,
+      "min_us": 642.873717948718,
+      "output_count": 1021
+    },
+    {
+      "case": "rational_p3_tol0.01",
+      "max_us": 50.20165662650602,
+      "median_us": 47.763658070678126,
+      "min_us": 46.86283973758201,
+      "output_count": 39
+    },
+    {
+      "case": "rational_p3_tol0.0001",
+      "max_us": 236.04481132075472,
+      "median_us": 230.67096774193547,
+      "min_us": 228.34132420091325,
+      "output_count": 116
+    },
+    {
+      "case": "rational_p3_tol0.000001",
+      "max_us": 773.823846153846,
+      "median_us": 752.5105263157895,
+      "min_us": 736.2683823529412,
+      "output_count": 361
+    },
+    {
+      "case": "rational_p5_tol0.01",
+      "max_us": 110.27497243660419,
+      "median_us": 102.01111111111112,
+      "min_us": 101.23528816986855,
+      "output_count": 34
+    },
+    {
+      "case": "rational_p5_tol0.0001",
+      "max_us": 272.7476839237057,
+      "median_us": 262.4041884816754,
+      "min_us": 257.82603092783506,
+      "output_count": 102
+    },
+    {
+      "case": "rational_p5_tol0.000001",
+      "max_us": 841.8252100840336,
+      "median_us": 828.6512396694216,
+      "min_us": 767.128244274809,
+      "output_count": 338
+    },
+    {
+      "case": "rational_p8_tol0.01",
+      "max_us": 164.2824302134647,
+      "median_us": 130.90522875816993,
+      "min_us": 117.09754098360656,
+      "output_count": 31
+    },
+    {
+      "case": "rational_p8_tol0.0001",
+      "max_us": 277.21495844875346,
+      "median_us": 258.8677002583979,
+      "min_us": 236.8338061465721,
+      "output_count": 95
+    },
+    {
+      "case": "rational_p8_tol0.000001",
+      "max_us": 723.1287769784174,
+      "median_us": 681.265306122449,
+      "min_us": 634.8240506329114,
+      "output_count": 317
+    },
+    {
+      "case": "interpolate_n16_periodicfalse",
+      "max_us": 5.838996905470894,
+      "median_us": 5.692827460579496,
+      "min_us": 5.382438105489774,
+      "output_count": 16
+    },
+    {
+      "case": "interpolate_n64_periodicfalse",
+      "max_us": 128.50397946084723,
+      "median_us": 107.34431330472104,
+      "min_us": 86.51574394463668,
+      "output_count": 64
+    },
+    {
+      "case": "interpolate_n128_periodicfalse",
+      "max_us": 1070.0021276595744,
+      "median_us": 936.6794392523365,
+      "min_us": 922.6119266055047,
+      "output_count": 128
+    },
+    {
+      "case": "interpolate_n256_periodicfalse",
+      "max_us": 7681.314285714287,
+      "median_us": 7401.085714285715,
+      "min_us": 6531.943749999999,
+      "output_count": 256
+    },
+    {
+      "case": "interpolate_n512_periodicfalse",
+      "max_us": 53204.45,
+      "median_us": 52127.96666666667,
+      "min_us": 46102.69999999999,
+      "output_count": 512
+    },
+    {
+      "case": "interpolate_n16_periodictrue",
+      "max_us": 8.293581025045613,
+      "median_us": 7.895018552143364,
+      "min_us": 7.80146657305562,
+      "output_count": 19
+    },
+    {
+      "case": "interpolate_n64_periodictrue",
+      "max_us": 157.98009478672986,
+      "median_us": 139.76424581005585,
+      "min_us": 134.33973154362414,
+      "output_count": 67
+    },
+    {
+      "case": "interpolate_n128_periodictrue",
+      "max_us": 1115.8153846153846,
+      "median_us": 923.6348623853211,
+      "min_us": 862.1689655172414,
+      "output_count": 131
+    },
+    {
+      "case": "interpolate_n256_periodictrue",
+      "max_us": 7421.900000000001,
+      "median_us": 6829.573333333333,
+      "min_us": 6539.1875,
+      "output_count": 259
+    },
+    {
+      "case": "interpolate_n512_periodictrue",
+      "max_us": 64428.25000000001,
+      "median_us": 60803.65,
+      "min_us": 56149.85,
+      "output_count": 515
+    }
+  ],
+  "machine": {
+    "cpu": "AMD RYZEN AI MAX+ 395",
+    "physical_cores": 16,
+    "logical_processors": 32,
+    "ram_visible_kib": 100294468,
+    "os": "Windows 11 Pro"
+  },
+  "date": "2026-09-24"
+}
