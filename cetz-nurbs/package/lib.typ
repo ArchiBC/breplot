@@ -191,3 +191,5 @@
 #let evaluate-point(spec,u)=evaluation.evaluate(spec,u)
 #let evaluate-derivatives(spec,u)=evaluation.jet(spec,u)
 #let curve-curvature(spec,u)=evaluation.curve-curvature(spec,u)
+
+#let interpolate-at-parameters=evaluation.interpolate-at-parameters

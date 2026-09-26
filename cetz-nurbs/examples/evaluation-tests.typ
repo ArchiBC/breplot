@@ -46,3 +46,24 @@
 #vector-near(evaluate-point(broken,1),(3,1))
 #vector-near(evaluate-derivatives(broken,1).first,(0,1))
 Evaluation and derivative checks passed.
+
+#import "../package/lib.typ": interpolate-at-parameters
+// Recover rational 3D control points from parameters and endpoint derivatives.
+#let source=(control_points:((0,0,0),(1,2,1),(3,-1,2),(4,0,3)),knots:(0,0,0,0,1,1,1,1),weights:(1,0.8,1.4,1))
+#let recovered=interpolate-at-parameters((evaluate-point(source,0),evaluate-point(source,1)),(0,1),
+  knots:source.knots,weights:source.weights,
+  start-derivative:evaluate-derivatives(source,0).first,end-derivative:evaluate-derivatives(source,1).first)
+#for (a,b) in source.control_points.zip(recovered.control_points) {vector-near(a,b)}
+#for i in range(21) {vector-near(evaluate-point(source,i/20),evaluate-point(recovered,i/20))}
+// Arbitrary knot spacing and a Rhino-format knot vector.
+#let points=((0,0),(1,2),(3,1),(4,0))
+#let interpolated=interpolate-at-parameters(points,(0,0.2,0.8,1),knots:(0,0,0,1,1,1),knot-format:"rhino")
+#for (p,u) in points.zip((0,0.2,0.8,1)) {vector-near(evaluate-point(interpolated,u),p)}
+
+// Endpoint dC/du scales inversely when the parameter interval is rescaled.
+#let stretch=1000000
+#let stretched=interpolate-at-parameters((evaluate-point(source,0),evaluate-point(source,1)),(0,stretch),
+  knots:source.knots.map(u=>u*stretch),weights:source.weights,
+  start-derivative:evaluate-derivatives(source,0).first.map(v=>v/stretch),
+  end-derivative:evaluate-derivatives(source,1).first.map(v=>v/stretch))
+#for i in range(21) {vector-near(evaluate-point(source,i/20),evaluate-point(stretched,stretch*i/20))}

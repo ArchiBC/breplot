@@ -82,3 +82,68 @@
   let vector=mul(sub(j.second,mul(tangent,parallel)),1/(speed*speed))
   (point:j.point,vector:vector,magnitude:norm(vector))
 }
+
+// Interpolate explicit parameter samples with prescribed knots and optional
+// endpoint derivatives dC/du. Weights are fixed inputs, not fitted unknowns.
+#let interpolate-at-parameters(points,parameters,knots:(),weights:none,knot-format:"full",
+  start-derivative:none,end-derivative:none)={
+  assert(points.len() >= 2 and parameters.len()==points.len(),message:"One parameter per interpolation point is required")
+  assert(parameters.windows(2).all(pair=>pair.first() < pair.last()),message:"Interpolation parameters must be strictly increasing")
+  let dim=points.first().len()
+  assert(dim in (2,3) and points.all(p=>p.len()==dim),message:"Expected consistent 2D or 3D points")
+  let count=points.len()+int(start-derivative!=none)+int(end-derivative!=none)
+  assert(count <= 64,message:"Explicit-knot interpolation supports at most 64 constraints")
+  let template=normalize((control_points:range(count).map(_=>(0,0)),knots:knots,
+    weights:if weights==none {range(count).map(_=>1)} else {weights},knot_format:knot-format))
+  let (a,b)=domain(template)
+  assert(parameters.first() >= a and parameters.last() <= b,message:"Interpolation parameter outside curve domain")
+  let conditions=parameters.map(u=>(u,0))
+  let rhs=points
+  for (u,value) in ((a,start-derivative),(b,end-derivative)) {
+    if value!=none {
+      assert(value.len()==dim,message:"Endpoint derivative dimension must match points")
+      conditions.push((u,1));rhs.push(value)
+    }
+  }
+  let columns=range(count).map(j=>{
+    let basis=template
+    basis.control_points=range(count).map(i=>(if i==j {1} else {0},0))
+    conditions.map(((u,order))=>if order==0 {evaluate(basis,u).first()} else {jet(basis,u).first.first()})
+  })
+  let original=range(count).map(i=>columns.map(c=>c.at(i)))
+  let matrix=original
+  let result=rhs
+  // Scale rows before partial pivoting so changing the parameter domain does
+  // not make derivative constraints artificially dominate point constraints.
+  for i in range(count) {
+    let scale=calc.max(..matrix.at(i).map(calc.abs))
+    assert(scale > 0,message:"Singular interpolation constraints")
+    matrix.at(i)=matrix.at(i).map(v=>v/scale)
+    result.at(i)=mul(result.at(i),1/scale)
+  }
+  for col in range(count) {
+    let pivot=col
+    for row in range(col+1,count) {
+      if calc.abs(matrix.at(row).at(col)) > calc.abs(matrix.at(pivot).at(col)) {pivot=row}
+    }
+    assert(calc.abs(matrix.at(pivot).at(col)) > 1e-12,message:"Singular interpolation constraints")
+    let temp=matrix.at(col);matrix.at(col)=matrix.at(pivot);matrix.at(pivot)=temp
+    temp=result.at(col);result.at(col)=result.at(pivot);result.at(pivot)=temp
+    let divisor=matrix.at(col).at(col)
+    matrix.at(col)=matrix.at(col).map(v=>v/divisor)
+    result.at(col)=mul(result.at(col),1/divisor)
+    for row in range(count) {
+      if row!=col {
+        let factor=matrix.at(row).at(col)
+        matrix.at(row)=sub(matrix.at(row),mul(matrix.at(col),factor))
+        result.at(row)=sub(result.at(row),mul(result.at(col),factor))
+      }
+    }
+  }
+  for (i,row) in original.enumerate() {
+    let actual=range(dim).map(axis=>row.zip(result).map(((v,p))=>v*p.at(axis)).sum())
+    assert(norm(sub(actual,rhs.at(i))) < 1e-8*calc.max(1,norm(rhs.at(i))),message:"Interpolation residual exceeds tolerance")
+  }
+  template.control_points=result
+  template
+}
