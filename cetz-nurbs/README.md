@@ -12,7 +12,7 @@
 .\scripts\build.ps1
 ```
 
-脚本运行几何测试、构建 `package/cetz_nurbs.wasm`，编译 `main.typ` 为 `main.pdf` 与 `target/main-{p}.png`，并将包复制到 `target/typst-packages/local/cetz-nurbs/0.1.0` 验证清单导入。分发本地包时复制 `package/` 内的 `typst.toml`、`lib.typ` 和构建后的 `cetz_nurbs.wasm`。
+脚本运行几何测试、构建 `package/cetz_nurbs.wasm`，编译 `main.typ` 为 `main.pdf` 与 `target/main-{p}.png`，并将包复制到 `target/typst-packages/local/cetz-nurbs/0.1.0` 验证清单导入。分发本地包时复制 `package/` 内的 `typst.toml`、`lib.typ`、`evaluation.typ` 和构建后的 `cetz_nurbs.wasm`。
 
 ## CeTZ 绘图接口
 
@@ -94,3 +94,38 @@ typst compile --root . main.typ main.pdf
 ```
 
 约定参考：[Rhino 整圆示例](https://developer.rhino3d.com/en/samples/rhinocommon/add-nurbs-circle/)、[Rhino 节点存储说明](https://developer.rhino3d.com/guides/opennurbs/nurbs-geometry-overview/)、[GSL Greville 参数说明](https://www.gnu.org/software/gsl/doc/html/bspline.html)。
+
+## 求点、导数与曲率
+
+`evaluate-point(spec, u)` 返回原参数域中的二维或三维点。
+`evaluate-derivatives(spec, u)` 返回 `(point:, first:, second:)`，导数相对于原始参数 `u`。
+`curve-domain(spec)` 和 `curve-degree(spec)` 返回有效区间与次数。
+`curve-curvature(spec, u)` 返回 `(point:, vector:, magnitude:)`；vector 是单位切向量对弧长的导数，支持 2D/3D，magnitude 是曲率大小。
+
+这些接口用齐次 de Boor 和解析有理导数计算原曲线，不通过显示三次曲线求值；支持 full/rhino 节点与省略权重。内重节点处取右侧值，区间终点取左侧值。仅在对应侧导数存在时才具有几何意义；零速点的曲率会报错，不在区间外外推。可用于参数标记、切线箭头、曲率梳及密切圆。`examples/evaluation-tests.typ` 验证有理圆弧、3D、参数缩放、重节点和周期接缝；构建脚本会执行它。
+
+## 下载与安装本地 Typst 包
+
+源码地址：[ArchiBC/breplot](https://github.com/ArchiBC/breplot)，独立库在
+[`cetz-nurbs/`](https://github.com/ArchiBC/breplot/tree/main/cetz-nurbs)。
+也可以[下载 ZIP](https://github.com/ArchiBC/breplot/archive/refs/heads/main.zip) 后解压。
+仓库不包含构建产物，首次使用需按前述要求安装 Rust、WASM target 和 Typst。
+
+Windows PowerShell：
+
+```powershell
+git clone https://github.com/ArchiBC/breplot.git
+Set-Location breplot
+.\cetz-nurbs\scripts\build.ps1
+.\cetz-nurbs\scripts\install-local.ps1
+```
+
+安装器将四个运行文件复制到 `%APPDATA%\typst\packages\local\cetz-nurbs\0.1.0`
+并核对 SHA256；设置了 `TYPST_PACKAGE_PATH` 时优先使用该目录。
+可用 `-PackagePath` 指定另一个包根目录；非默认目录需要相应的 Typst 配置。
+
+```typst
+#import "@local/cetz-nurbs:0.1.0": nurbs, evaluate-point, evaluate-derivatives
+```
+
+从此其他项目无需复制 `package/`；更新源码后重新构建、安装即可。

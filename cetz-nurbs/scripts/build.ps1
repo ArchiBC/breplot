@@ -25,4 +25,6 @@ New-Item -ItemType Directory -Force -Path $localPackage | Out-Null
 Copy-Item -Path (Join-Path $root 'package\*') -Destination $localPackage -Force
 & typst compile --root $root --package-path $packageRoot (Join-Path $root 'examples\package-import.typ') (Join-Path $root 'target\package-import.png')
 if ($LASTEXITCODE -ne 0) { throw 'Standalone NURBS package import failed.' }
+& typst compile --root $root (Join-Path $root 'examples\evaluation-tests.typ') (Join-Path $root 'target\evaluation-tests.pdf')
+if ($LASTEXITCODE -ne 0) { throw 'NURBS evaluation and derivative checks failed.' }
 Write-Output 'Built standalone cetz-nurbs WASM and CeTZ examples.'

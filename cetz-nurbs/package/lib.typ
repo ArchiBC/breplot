@@ -183,3 +183,11 @@
     })
   })
 }
+
+// Annotation/analysis API evaluates the original rational curve, not its display.
+#import "evaluation.typ" as evaluation
+#let curve-domain(spec)=evaluation.domain(evaluation.normalize(spec))
+#let curve-degree(spec)=evaluation.degree(evaluation.normalize(spec))
+#let evaluate-point(spec,u)=evaluation.evaluate(spec,u)
+#let evaluate-derivatives(spec,u)=evaluation.jet(spec,u)
+#let curve-curvature(spec,u)=evaluation.curve-curvature(spec,u)
