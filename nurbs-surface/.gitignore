@@ -1,0 +1,6 @@
+/rust/target/
+/target/
+/main.pdf
+/*.pdf
+/package/*.wasm
+**/__pycache__/

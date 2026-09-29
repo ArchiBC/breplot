@@ -1,6 +1,6 @@
 # breplot
 
-`breplot` 是面向 NURBS/B-Rep 教材的 Typst 技术插图实验项目。**目前主要实现与开发工作集中在 NURBS 曲线部分**，以独立的 [`cetz-nurbs`](cetz-nurbs/README.md) 包提供曲线构造、数学表示与 CeTZ 矢量绘制。STEP/B-Rep 部分保留已有实验链路，尚未完成通用模型与多视角的系统验证。
+`breplot` 是面向 NURBS/B-Rep 教材的 Typst 技术插图实验项目。**当前已有独立 NURBS 曲线模块，并开始构建独立曲面求值与网格模块**，以独立的 [`cetz-nurbs`](cetz-nurbs/README.md) 包提供曲线构造、数学表示与 CeTZ 矢量绘制。STEP/B-Rep 部分保留已有实验链路，尚未完成通用模型与多视角的系统验证。
 
 ## 当前重点：NURBS 曲线
 
@@ -19,7 +19,15 @@
 .\cetz-nurbs\scripts\build.ps1
 ```
 
-## STEP/B-Rep 实验链路
+## 独立 NURBS 曲面数据
+
+新增 [`nurbs-surface/`](nurbs-surface/README.md)，以无第三方依赖的 Rust crate 实现曲面数据结构。U/V 直接存完整节点向量，从长度推导次数，支持 full/Rhino 输入、二维控制网格、正权重、Bézier 单跨构造和有效参数域校验。参考 OCCT 的几何组织方式，不采用节点加重数存储，也不依赖 OCCT 或 brepkit。
+
+[`nurbs-surface/main.typ`](nurbs-surface/main.typ) 同时解释原理与代码，并直接引用源码中的关键片段。已实现数据层、参数求值、一阶偏导、法向、均匀网格与采样误差驱动的整体加密，文档含平面、柱面、球面和鞍面的原生 SVG 光滑着色与网格图；另支持多边形 UV 裁剪与等参结构线显示，通用实体遮挡尚未实现。独立验证：`.\nurbs-surface\scripts\build.ps1`；完整构建也会验证此模块。
+
+## STEP/B-Rep 实验链路（默认暂停）
+
+默认 `scripts/build-demo.ps1` 只构建独立曲线与曲面模块，不执行 STEP 导入、缓存刷新和 STEP 示例编译。旧代码与样本保留；需要验证旧链路时显式运行 `scripts/build-demo.ps1 -IncludeStep`。直接编译根目录 `main.typ` 或手动运行 `refresh-preview.ps1` 仍会进入旧 STEP 路径。
 
 该部分输入 STEP 模型和正交视角，在 Typst 编译时生成**PNG 曲面 + Typst 原生 `curve` 边线**的混合图像，用于验证模型到教材插图的可复现流程。
 
@@ -41,14 +49,14 @@ Rust 插件沿用 [Maquette](https://github.com/bernsteining/maquette) 的光栅
 需要 Rust 1.96.0、`wasm32-unknown-unknown` target 和 Typst 0.14+ CLI（曲线扩展使用 CeTZ 0.5.2）。Windows PowerShell：
 
 ```powershell
-.\scripts\build-demo.ps1
+.\scripts\build-demo.ps1 -IncludeStep
 ```
 
 脚本在 `rust/` 子项目运行单元测试并编译 WASM，生成编辑预览缓存，再编译根目录的 [`main.typ`](main.typ) 和 [`examples/`](examples/) 中的视图、隐藏线、平涂和 NURBS 示例。它还把包临时复制到 `target/typst-packages/local/breplot/0.1.0`，通过 `@local/breplot:0.1.0` 编译 [`examples/package-import.typ`](examples/package-import.typ)，验证两个独立包的清单入口。脚本也运行 `cetz-nurbs/scripts/build.ps1` 的独立测试和 CeTZ 组合示例。输出为 `target/main.png`、`target/demo.png`、`target/hidden.png`、`target/flat.png`、`target/nurbs.png` 和 `target/package-import.png`。WASM 文件、预览缓存及生成结果不纳入源码；直接运行 Typst 示例前需要先构建插件。
 
 目录按 Typst 包与 Rust 子项目划分：[`package/typst.toml`](package/typst.toml) 声明包名、版本和入口 [`package/lib.typ`](package/lib.typ)，WASM 构建后与入口同目录。根目录 `main.typ` 是可直接编译的演示文档，包含 STEP 视图与两种 NURBS 曲线；3D 示例还显示投影坐标轴、控制点编号、完整节点向量和世界坐标。它不是包入口，也没有声明为 Typst 模板。包本身仍处于本地演示阶段；公开分发前需处理下文所述的依赖许可证。
 
-VS Code 的 Tinymist 使用 `quality=cached`：`main.typ`、`examples/demo.typ` 和 `examples/hidden.typ` 读取同一份 `target/preview-step.bin`，保存文档时只重排原生曲线和文字，不重新导入 STEP。缓存包含隐藏边，按文档参数决定是否显示。缓存使用 [`examples/step-preview.json`](examples/step-preview.json) 的**完整高密度参数**。首次打开前运行一次 `scripts/build-demo.ps1`；修改 STEP 文件、视角或预览参数后，运行 `scripts/refresh-preview.ps1` 重新生成缓存。预览缓存是静态快照；在刷新前它不会自动反映这些几何输入的变化。工作区还把预览刷新设为保存时触发。
+VS Code 的 Tinymist 使用 `quality=cached`：`main.typ`、`examples/demo.typ` 和 `examples/hidden.typ` 读取同一份 `target/preview-step.bin`，保存文档时只重排原生曲线和文字，不重新导入 STEP。缓存包含隐藏边，按文档参数决定是否显示。缓存使用 [`examples/step-preview.json`](examples/step-preview.json) 的**完整高密度参数**。首次打开旧 STEP 示例前运行一次 `scripts/build-demo.ps1 -IncludeStep`；修改 STEP 文件、视角或预览参数后，运行 `scripts/refresh-preview.ps1` 重新生成缓存。预览缓存是静态快照；在刷新前它不会自动反映这些几何输入的变化。工作区还把预览刷新设为保存时触发。
 
 直接执行 `typst compile main.typ target/main.png` 或构建脚本时，`main.typ` 会现场计算完整精度：默认至少约 100 万有效遮挡三角形、遮挡短弦不超过 0.5 mm。需要在命令行复现编辑器的快速预览，可执行：
 
@@ -170,4 +178,4 @@ scripts/build-demo.ps1   构建并验证入口与示例
 scripts/refresh-preview.ps1 重新生成 Tinymist STEP 预览缓存
 ```
 
-当前优先完善独立 NURBS 包的曲线构造、绘制性能与教材示例。STEP/B-Rep 部分仍需处理光滑曲面的连续视轮廓、补充不同模型与视角的遮挡回归验证，并确定公开分发所需的依赖与许可证方案。项目缘起见[原始讨论](https://chatgpt.com/share/6ab3411e-7e30-83ea-8cee-c465fccd0bc9)。
+当前优先推进独立 NURBS 曲面的求值、网格细分与教材文档，现有曲线模块保持可用。STEP/B-Rep 部分仍需处理光滑曲面的连续视轮廓、补充不同模型与视角的遮挡回归验证，并确定公开分发所需的依赖与许可证方案。项目缘起见[原始讨论](https://chatgpt.com/share/6ab3411e-7e30-83ea-8cee-c465fccd0bc9)。

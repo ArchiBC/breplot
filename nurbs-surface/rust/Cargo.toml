@@ -1,0 +1,11 @@
+[package]
+name = "nurbs-surface"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.96"
+publish = false
+description = "Independent validated tensor-product NURBS surface data"
+
+[lib]
+path = "src/lib.rs"
+crate-type = ["rlib", "cdylib"]

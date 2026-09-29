@@ -1,3 +1,7 @@
+param(
+    [switch]$IncludeStep
+)
+
 $ErrorActionPreference = 'Stop'
 
 $root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
@@ -19,7 +23,13 @@ if (-not (Get-Command typst -ErrorAction SilentlyContinue)) {
     throw 'typst not found. Install the Typst CLI first.'
 }
 
+& (Join-Path $root 'nurbs-surface\scripts\build.ps1')
 & (Join-Path $root 'cetz-nurbs\scripts\build.ps1')
+
+if (-not $IncludeStep) {
+    Write-Output 'Built curve and surface modules. STEP pipeline is disabled by default; use -IncludeStep to opt in.'
+    return
+}
 
 Push-Location -LiteralPath $rust
 try {
