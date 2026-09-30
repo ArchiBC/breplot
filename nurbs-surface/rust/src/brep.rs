@@ -21,6 +21,7 @@ pub struct DisplayOptions {
     /// Interior isocurves per face, distributed over its active parameter domain.
     pub iso_count: [usize; 2],
     pub boundaries: bool,
+    /// Experimental view-dependent contours; disabled by default.
     pub silhouettes: bool,
     pub samples_per_span: usize,
 }
@@ -34,7 +35,7 @@ impl Default for DisplayOptions {
             structure_lines: true,
             iso_count: [4, 4],
             boundaries: true,
-            silhouettes: true,
+            silhouettes: false,
             samples_per_span: 16,
         }
     }
@@ -148,7 +149,7 @@ impl Brep {
                 ));
             }
             if display.silhouettes {
-                lines.extend(silhouettes(&part, view));
+                lines.extend(silhouettes(&face.surface, &part, view)?);
             }
             let d = face.surface.domain();
             let values = |axis: usize| -> Vec<f64> {
@@ -244,10 +245,15 @@ impl Brep {
         })
     }
 }
-/// Piecewise-linear zero contour of n dot view on the display mesh. This is
-/// view dependent and approximate; invalid pole normals are skipped explicitly.
-fn silhouettes(mesh: &Mesh, view: [f64; 3]) -> Vec<SurfaceLine> {
+/// Locate contour crossings in parameter triangles, then solve n dot view = 0
+/// on the original surface. Mesh resolution still controls contour topology.
+fn silhouettes(
+    surface: &NurbsSurface,
+    mesh: &Mesh,
+    view: [f64; 3],
+) -> Result<Vec<SurfaceLine>, DataError> {
     let mut result = vec![];
+    let mut segments = BTreeSet::new();
     for t in &mesh.triangles {
         let v = t.map(|i| mesh.vertices[i]);
         let Some(n) = v.iter().map(|v| v.normal).collect::<Option<Vec<_>>>() else {
@@ -255,7 +261,10 @@ fn silhouettes(mesh: &Mesh, view: [f64; 3]) -> Vec<SurfaceLine> {
         };
         let f: Vec<_> = n
             .iter()
-            .map(|n| n.iter().zip(view).map(|(a, b)| a * b).sum::<f64>())
+            .map(|n| {
+                let f = n.iter().zip(view).map(|(a, b)| a * b).sum::<f64>();
+                if f.abs() < 1e-12 { 0. } else { f }
+            })
             .collect();
         if f.iter().all(|x| x.abs() < 1e-12) {
             continue;
@@ -266,15 +275,122 @@ fn silhouettes(mesh: &Mesh, view: [f64; 3]) -> Vec<SurfaceLine> {
                 hits.push(v[a].point);
             }
             if f[a] * f[b] < 0. {
-                let u = f[a] / (f[a] - f[b]);
-                hits.push(std::array::from_fn(|k| {
-                    v[a].point[k] + u * (v[b].point[k] - v[a].point[k])
-                }));
+                // Solve on the original surface, not the chord inside it. Reversed
+                // face normals do not affect the zero set; use analytic signs here.
+                let spans = v[a].spans;
+                let at = |s: f64| {
+                    surface.evaluate_in_spans(
+                        std::array::from_fn(|k| v[a].uv[k] + s * (v[b].uv[k] - v[a].uv[k])),
+                        spans,
+                    )
+                };
+                let mut lo = 0.;
+                let mut hi = 1.;
+                let start_normal = match at(lo)?.normal {
+                    Some(n) => Some(n),
+                    None => at(1e-6)?.normal,
+                };
+                let sign = start_normal
+                    .map(|na| na.iter().zip(view).map(|(a, b)| a * b).sum::<f64>())
+                    .unwrap_or(0.);
+                if sign == 0. {
+                    continue;
+                }
+                let mut sample = at(0.5)?;
+                for _ in 0..40 {
+                    let mid = (lo + hi) * 0.5;
+                    sample = at(mid)?;
+                    let Some(normal) = sample.normal else { break };
+                    let value = normal.iter().zip(view).map(|(a, b)| a * b).sum::<f64>();
+                    if value.abs() < 1e-12 {
+                        break;
+                    }
+                    if value * sign > 0. {
+                        lo = mid;
+                    } else {
+                        hi = mid;
+                    }
+                }
+                hits.push(sample.point);
             }
         }
         if hits.len() >= 2 && norm(sub(hits[0], hits[1])) > 1e-12 {
-            result.push(line(LineKind::Silhouette, vec![hits[0], hits[1]]));
+            // A contour on a mesh edge belongs to both adjacent triangles.
+            // Emit it once, including when the mesh duplicates knot-cell vertices.
+            let key = |p: [f64; 3]| p.map(|x| if x == 0. { 0 } else { x.to_bits() });
+            let mut edge = [key(hits[0]), key(hits[1])];
+            edge.sort();
+            if segments.insert(edge) {
+                result.push(line(LineKind::Silhouette, vec![hits[0], hits[1]]));
+            }
         }
     }
-    result
+    Ok(result)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn tangent_knot_edges_remain_complete_under_normal_roundoff() {
+        let surface = crate::demo_surfaces::cylinder();
+        let mut mesh = surface.tessellate(MeshOptions::default()).unwrap();
+        // The two silhouettes coincide with knot-cell edges. Perturb their
+        // normals on both sides of zero, as occurs on imported rational faces.
+        for (i, vertex) in mesh.vertices.iter_mut().enumerate() {
+            if let Some(n) = &mut vertex.normal {
+                if n[1].abs() < 1e-12 {
+                    n[1] = if i % 2 == 0 { 1e-15 } else { -1e-15 };
+                }
+            }
+        }
+        for reverse in [false, true] {
+            if reverse {
+                for v in &mut mesh.vertices {
+                    v.normal = v.normal.map(|n| n.map(|x| -x));
+                }
+            }
+            let lines = silhouettes(&surface, &mesh, [0., -1., 0.]).unwrap();
+            for x in [-1., 1.] {
+                let mut intervals: Vec<_> = lines
+                    .iter()
+                    .filter(|l| (l.points[0][0] - x).abs() < 1e-10)
+                    .map(|l| {
+                        let mut z = [l.points[0][2], l.points[1][2]];
+                        z.sort_by(f64::total_cmp);
+                        z
+                    })
+                    .collect();
+                intervals.sort_by(|a, b| a[0].total_cmp(&b[0]));
+                let mut end = -1.;
+                for [lo, hi] in intervals {
+                    assert!(
+                        (lo - end).abs() < 1e-10,
+                        "gap or duplicate contour: {lo} != {end}"
+                    );
+                    end = hi;
+                }
+                assert!((end - 1.).abs() < 1e-10);
+            }
+        }
+    }
+
+    #[test]
+    fn oblique_sphere_contour_points_lie_on_surface_and_tangent_plane() {
+        let surface = crate::demo_surfaces::sphere();
+        let mesh = surface
+            .tessellate(MeshOptions {
+                tolerance: 0.08,
+                ..Default::default()
+            })
+            .unwrap();
+        let view = [1., 2., 3.].map(|x| x / 14_f64.sqrt());
+        let lines = silhouettes(&surface, &mesh, view).unwrap();
+        assert!(lines.len() > 8);
+        for p in lines.iter().flat_map(|l| &l.points) {
+            assert!((norm(*p) - 1.).abs() < 1e-10);
+            assert!(p.iter().zip(view).map(|(a, b)| a * b).sum::<f64>().abs() < 1e-10);
+        }
+    }
 }

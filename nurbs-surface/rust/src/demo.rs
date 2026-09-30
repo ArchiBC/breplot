@@ -157,6 +157,7 @@ pub fn display_scene(id: &str) -> Result<crate::DisplayScene, DataError> {
             d.iso_count = [2, 2];
         }
         "brep-silhouette" => {
+            d.silhouettes = true;
             b = crate::Brep {
                 faces: vec![crate::BrepFace {
                     surface: crate::demo_surfaces::sphere(),

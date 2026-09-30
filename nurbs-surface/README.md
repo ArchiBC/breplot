@@ -89,9 +89,9 @@ Edge 实测确认：将 Typst 嵌入 Type 4 插图时添加的 ICC 透明组混�
 
 ## B-Rep 显示装配与模式
 
-`Brep::display(DisplayOptions, MeshOptions, SvgOptions)` 返回可输出 SVG/PDF 的 `DisplayScene`。支持 `Shaded`、`HiddenLine`、`Wireframe`，以及独立的控制点、控制网、结构线、边界、近似轮廓开关。U/V 结构线数量 `iso_count` 与几何细分独立；控制辅助始终透视显示。所有面的网格共同参与线条遮挡，显式共享边 ID 仅绘制一次。
+`Brep::display(DisplayOptions, MeshOptions, SvgOptions)` 返回可输出 SVG/PDF 的 `DisplayScene`。支持 `Shaded`、`HiddenLine`、`Wireframe`，以及独立的控制点、控制网、结构线、边界、近似轮廓开关。视轮廓为实验性功能，默认关闭；通过 `DisplayOptions { silhouettes: true, ..Default::default() }` 显式启用，拓扑边界仍默认显示。U/V 结构线数量 `iso_count` 与几何细分独立；控制辅助始终透视显示。所有面的网格共同参与线条遮挡，显式共享边 ID 仅绘制一次。
 
-`demo::cube_brep()` 提供六个 NURBS 面和十二条共享显示边的案例；`examples/display.rs` 生成五种显示示例，构建脚本及 `main.typ` 已纳入演示。边目前是调用者提供的折线，不执行自动缝合；裁剪仍是 UV 多边形，轮廓是显示网格上法向与视向点积的零等值线。没有完整环拓扑、实体合法性验证或精确可见性保证。奇异法向处轮廓可能断开；着色画家排序不能保证相交面的结果。
+`demo::cube_brep()` 提供六个 NURBS 面和十二条共享显示边的案例；`examples/display.rs` 生成五种显示示例，构建脚本及 `main.typ` 已纳入演示。边目前是调用者提供的折线，不执行自动缝合；裁剪仍是 UV 多边形，轮廓以显示网格定位法向与视向点积的零等值线，再在 UV 中二分求值原始曲面；切向点积近零判定避免节点边断线，共用零边去重。没有完整环拓扑、实体合法性验证或精确可见性保证。奇异法向处轮廓可能断开；着色画家排序不能保证相交面的结果。
 
 ## 纯 Rust 3dm B-Rep 读取：官方 Logo 目标
 
