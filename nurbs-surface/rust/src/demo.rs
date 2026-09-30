@@ -80,6 +80,9 @@ pub fn scene(id: &str) -> Result<(Mesh, Vec<SurfaceLine>, SvgOptions), DataError
     Ok((mesh, lines, o))
 }
 pub fn response(id: &str) -> Result<Vec<u8>, DataError> {
+    if id.starts_with("brep-") {
+        return display_scene(id)?.pdf();
+    }
     if id == "stats" {
         let entries = ["plane", "cylinder", "sphere", "saddle"].map(|id| {
             let (m, _, _) = scene(id).unwrap();
@@ -93,4 +96,87 @@ pub fn response(id: &str) -> Result<Vec<u8>, DataError> {
     }
     let (m, l, o) = scene(id)?;
     crate::render_pdf_with_lines(&m, &l, o)
+}
+
+/// Six independent NURBS faces, with twelve explicitly shared display edges.
+pub fn cube_brep() -> crate::Brep {
+    let p = [
+        [0., 0., 0.],
+        [1., 0., 0.],
+        [1., 1., 0.],
+        [0., 1., 0.],
+        [0., 0., 1.],
+        [1., 0., 1.],
+        [1., 1., 1.],
+        [0., 1., 1.],
+    ];
+    let mut brep = crate::Brep::default();
+    let mut edges = std::collections::BTreeMap::new();
+    for q in [
+        [0, 3, 2, 1],
+        [4, 5, 6, 7],
+        [0, 1, 5, 4],
+        [1, 2, 6, 5],
+        [2, 3, 7, 6],
+        [3, 0, 4, 7],
+    ] {
+        let mut ids = vec![];
+        for i in 0..4 {
+            let (a, b) = (q[i].min(q[(i + 1) % 4]), q[i].max(q[(i + 1) % 4]));
+            let id = *edges.entry((a, b)).or_insert_with(|| {
+                brep.edges.push(crate::BrepEdge {
+                    points: vec![p[a], p[b]],
+                });
+                brep.edges.len() - 1
+            });
+            ids.push(id);
+        }
+        brep.faces.push(crate::BrepFace {
+            surface: crate::NurbsSurface::bezier(
+                vec![vec![p[q[0]], p[q[3]]], vec![p[q[1]], p[q[2]]]],
+                None,
+            )
+            .unwrap(),
+            trim: None,
+            reversed: false,
+            boundary_edges: ids,
+        });
+    }
+    brep
+}
+pub fn display_scene(id: &str) -> Result<crate::DisplayScene, DataError> {
+    let mut d = crate::DisplayOptions::default();
+    let mut b = cube_brep();
+    match id {
+        "brep-shaded" => {}
+        "brep-hidden" => d.mode = crate::DisplayMode::HiddenLine,
+        "brep-wire" => d.mode = crate::DisplayMode::Wireframe,
+        "brep-controls" => {
+            d.control_points = true;
+            d.control_net = true;
+            d.iso_count = [2, 2];
+        }
+        "brep-silhouette" => {
+            b = crate::Brep {
+                faces: vec![crate::BrepFace {
+                    surface: crate::demo_surfaces::sphere(),
+                    trim: None,
+                    reversed: false,
+                    boundary_edges: vec![],
+                }],
+                edges: vec![],
+            };
+            d.boundaries = false;
+            d.structure_lines = false;
+        }
+        _ => return Err(DataError::new("demo", "unknown display scene")),
+    }
+    b.display(
+        d,
+        MeshOptions {
+            tolerance: 0.025,
+            ..Default::default()
+        },
+        SvgOptions::default(),
+    )
 }

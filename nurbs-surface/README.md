@@ -47,7 +47,7 @@
 
 `SvgOptions` 提供 `specular`（0–1，默认 0.25）、`shininess`（0–10000，不含 0，默认 32）和 `opacity`（0–1，默认 1）。高光采用 Blinn–Phong 强度，在 Rust 中与漫反射作有界混合，直接输出最终 RGB 渐变，避免独立高光透明遮罩；材质透明度每个三角形合成后只施加一次。半透明前后面分别叠加，沿用平均深度排序，不模拟折射，也不保证复杂相交面的透明顺序正确。光照在同一包围盒上合成后统一裁切；半透明模式仅允许父三角形内的着色小片扩展覆盖，父组施加一次透明度，避免细分重复叠色；原三角形之间可能保留抗锯齿接缝。文档提供相同球面网格的无高光、高光和透明对照。
 
-`render_svg(mesh, SvgOptions)` 使用正交投影、顶点 Lambert 光照和每三角形一个线性渐变实现 Gouraud 着色，可选网格描边。先对插值法向归一化计算目标光照，再以小三角形渐变自适应逼近。`shading_tolerance` 默认 0.001，检查最终归一化 RGB 的采样误差（含单轴颜色拟合误差）（不是全域上界）；最多递归 8 层、每原三角形 65536 小片、全图 250000 小片，超限报错。细分只增加 SVG 着色片，不改变几何和结构线。不是逐像素渲染，极窄高光可能被有限探针漏采。三角形采用平均深度排序，不保证相交面或复杂实体的遮挡正确性。不透明无网格模式使用有界斜切角扩展的统一裁切区域减轻白缝；漫反射与高光共享覆盖，轮廓精度仍由 mesh 决定。
+`render_svg(mesh, SvgOptions)` 使用正交投影、顶点 Lambert 光照和每三角形一个线性渐变实现 Gouraud 着色，可选网格描边。先对插值法向归一化计算目标光照，再以小三角形渐变自适应逼近。`shading_tolerance` 默认 0.001，检查最终归一化 RGB 的采样误差（含单轴颜色拟合误差）（不是全域上界）；最多递归 12 层、每原三角形 65536 小片、全图 1000000 小片，超限报错。细分只增加 SVG 着色片，不改变几何和结构线。不是逐像素渲染，极窄高光可能被有限探针漏采。三角形采用平均深度排序，不保证相交面或复杂实体的遮挡正确性。不透明无网格模式使用有界斜切角扩展的统一裁切区域减轻白缝；漫反射与高光共享覆盖，轮廓精度仍由 mesh 决定。
 
 
 ## 文档显示与性能
@@ -85,3 +85,28 @@ Edge 实测确认：将 Typst 嵌入 Type 4 插图时添加的 ICC 透明组混�
 处理保留组隔离和透明度，仅修改带着色资源的 Form 的 `/Group/CS`；写回前逐一检查所有解码数据流未变、页数未变。全程在内存处理最终 PDF，不生成逐图中间文件。直接运行 `typst compile` 不包含此修复，应通过构建脚本导出。已确认版本约 1.84 MB、13 页；透明排序和接缝的既有限制仍适用。
 
 诊断注意：旧 `edge-group-diagnostic.pdf` 的 A/B 在 PyMuPDF 拼版时丢失了页面透明组，实际上与 C 一样没有组，不能据其标签推断 ICC 正常。`diagnose-edge-groups.py` 已改为显式添加 Form 组并断言，输出 `edge-group-diagnostic-v2.pdf`。
+
+
+## B-Rep 显示装配与模式
+
+`Brep::display(DisplayOptions, MeshOptions, SvgOptions)` 返回可输出 SVG/PDF 的 `DisplayScene`。支持 `Shaded`、`HiddenLine`、`Wireframe`，以及独立的控制点、控制网、结构线、边界、近似轮廓开关。U/V 结构线数量 `iso_count` 与几何细分独立；控制辅助始终透视显示。所有面的网格共同参与线条遮挡，显式共享边 ID 仅绘制一次。
+
+`demo::cube_brep()` 提供六个 NURBS 面和十二条共享显示边的案例；`examples/display.rs` 生成五种显示示例，构建脚本及 `main.typ` 已纳入演示。边目前是调用者提供的折线，不执行自动缝合；裁剪仍是 UV 多边形，轮廓是显示网格上法向与视向点积的零等值线。没有完整环拓扑、实体合法性验证或精确可见性保证。奇异法向处轮廓可能断开；着色画家排序不能保证相交面的结果。
+
+## 纯 Rust 3dm B-Rep 读取：官方 Logo 目标
+
+新入口 `pure3dm::read(&bytes)` 完全由 Rust 解码，无 Cargo 依赖，不加载 DLL、不调用 Python/.NET，也不读取保存的显示网格。返回原始 NURBS、复合曲线与 vertex/edge/trim/loop/face 拓扑；`Model::to_brep(tolerance)` 才采样为显示数据，复用现有显示模式、裁剪、结构线和 Type 4 输出。
+
+目标为官方 openNURBS 8.x 中最新的 NURBS Logo 样本（archive 70），固定为 [logo.3dm](3dm/fixtures/logo.3dm)。**6 个对象、22 张面、35 条共享边、79 条 trim 全部解析，跳过 0 个**。移除官方 DLL 前曾完成一次对照验证：曲面节点、控制点、权重完全一致；曲面和代理边/trim 采样最大点差约 `1.02e-14`。
+
+```powershell
+# 从仓库根目录执行；只做解析统计时省略输出路径
+cargo run --release --manifest-path nurbs-surface/rust/Cargo.toml --example read3dm_pure -- nurbs-surface/3dm/fixtures/logo.3dm logo.pdf shaded 2 2 0 0.15 0.01
+./nurbs-surface/scripts/build-pure-3dm.ps1
+```
+
+CLI 输出路径后的参数依次为 `shaded|hidden|wire`、U/V 结构线数量、控制点及控制网 `0|1`、网格容差、曲线采样容差。API 的 `DisplayOptions` 可分别控制点、控制网、边界和轮廓。默认视向 `(0,-1,0)` 适合本 Logo，容差以原文件坐标数值计。自解释文档：[3dm/pure/main.typ](3dm/pure/main.typ)；输出 `target/pure-3dm/main.pdf`（轻量位图预览与矢量隐藏线图），独立 `logo.pdf` 保留 Type 4 着色。
+
+范围明确限制为现代 64 位 chunk 归档（头版本 50/60/70/80，实际目标验证 70；80 的不支持对象样本也有回归）、B-Rep 3.0–3.3、NURBS 曲线/面及其 Rhino 别名、直线和复合曲线。不支持旋转面、挤出、解析平面、圆弧、块实例、SubD 等转换。未知几何整对象进入 `model.skipped`，CLI 打印原因；调用方应检查该报告。损坏已解码记录、非法索引和超限输入报错。名称、图层、单位、材质及用户数据暂不解码，不做单位换算；跳过块不作完整 CRC 校验声明。
+
+文件上限 128 MiB、对象 4096、复合曲线嵌套 16 层，显示最多 1024 面、每环 256 点。裁剪仍是采样多边形，轮廓由显示网格近似，平均深度排序不保证复杂穿插正确，Logo 小孔附近仍可能看到碎线。纯 Rust 接口可编译到 WASM，但尚未给 Typst WASM 插件增加 3dm 字节入口。`cargo test --release --test pure3dm` 覆盖目标、损坏、跳过、拓扑及 PDF 链路。官方 DLL、适配器和对照测试已移除；上述对照数字是移除前的历史测量。

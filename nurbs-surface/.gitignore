@@ -4,3 +4,5 @@
 /*.pdf
 /package/*.wasm
 **/__pycache__/
+**/bin/
+**/obj/

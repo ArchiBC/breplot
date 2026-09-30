@@ -3,6 +3,9 @@
 //! See ../../main.typ for the mathematics, storage conventions and source walkthrough.
 //! Validated data, analytic first derivatives and UV-preserving tessellation.
 mod axis;
+mod brep;
+pub mod pure3dm;
+pub use brep::{Brep, BrepEdge, BrepFace, DisplayMode, DisplayOptions, DisplayScene};
 mod deflate;
 mod evaluate;
 mod mesh;

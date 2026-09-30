@@ -1,0 +1,14 @@
+[package]
+name = "breplot"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.96"
+publish = false
+description = "Pure Rust 3dm B-Rep reader and technical illustration renderer"
+
+[[bin]]
+name = "breplot"
+path = "nurbs-surface/rust/examples/read3dm_pure.rs"
+
+[dependencies]
+nurbs-surface = { path = "nurbs-surface/rust", default-features = false }

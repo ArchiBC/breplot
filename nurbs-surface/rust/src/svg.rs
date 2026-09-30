@@ -13,6 +13,8 @@ pub struct SvgOptions {
     pub light: [f64; 3],
     pub base_color: [u8; 3],
     pub wireframe: bool,
+    pub draw_surfaces: bool,
+    pub occlude_lines: bool,
     /// White highlight mixing strength, in [0, 1]. Zero disables highlights.
     pub specular: f64,
     /// Blinn-Phong exponent; higher values produce narrower highlights.
@@ -31,6 +33,8 @@ impl Default for SvgOptions {
             light: [-3., 4., 7.],
             base_color: [84, 155, 194],
             wireframe: false,
+            draw_surfaces: true,
+            occlude_lines: true,
             specular: 0.25,
             shininess: 32.0,
             opacity: 1.0,
@@ -215,10 +219,13 @@ fn shade_patches(
         out.push(t);
         return Ok(());
     }
-    if depth == 8 {
+    if depth == 12 {
         return Err(DataError::new(
             "shading",
-            "sampled lighting error exceeds depth budget",
+            &format!(
+                "sampled lighting error {error} exceeds depth budget; normals {:?}",
+                t.map(|v| v.normal)
+            ),
         ));
     }
     let a = shade_mix(t, [0.5, 0.5, 0.]);
@@ -304,10 +311,19 @@ pub(crate) fn render_scene(
     if projected.iter().flatten().any(|x| !x.is_finite()) {
         return Err(DataError::new("svg", "nonfinite vertex"));
     }
+    let mut bounds = projected.clone();
+    for line in lines {
+        for &p in &line.points {
+            if p.iter().any(|v| !v.is_finite()) {
+                return Err(DataError::new("lines", "nonfinite point"));
+            }
+            bounds.push([dot(p, right), -dot(p, up), dot(p, view)]);
+        }
+    }
     let lo: [f64; 2] =
-        std::array::from_fn(|c| projected.iter().map(|p| p[c]).fold(f64::INFINITY, f64::min));
+        std::array::from_fn(|c| bounds.iter().map(|p| p[c]).fold(f64::INFINITY, f64::min));
     let hi: [f64; 2] = std::array::from_fn(|c| {
-        projected
+        bounds
             .iter()
             .map(|p| p[c])
             .fold(f64::NEG_INFINITY, f64::max)
@@ -382,6 +398,9 @@ pub(crate) fn render_scene(
     );
     let mut next_id = 0usize;
     for original_id in order {
+        if !options.draw_surfaces {
+            continue;
+        }
         let t = mesh.triangles[original_id];
         let original_p = t.map(screen);
         let mut patches = Vec::new();
@@ -396,8 +415,9 @@ pub(crate) fn render_scene(
             0,
             pdf.is_some(),
             &mut patches,
-        )?;
-        if next_id + patches.len() > 250000 {
+        )
+        .map_err(|e| e.prefix(&format!("triangle[{original_id}]")))?;
+        if next_id + patches.len() > 1_000_000 {
             return Err(DataError::new("shading", "render patch budget exceeded"));
         }
         if let Some(pdf) = pdf.as_deref_mut() {
@@ -477,7 +497,47 @@ pub(crate) fn render_scene(
         if line.points.iter().flatten().any(|v| !v.is_finite()) {
             return Err(DataError::new("lines", "nonfinite point"));
         }
-        let width = if line.kind == crate::LineKind::TrimBoundary {
+        let edit = matches!(
+            line.kind,
+            crate::LineKind::ControlPoint | crate::LineKind::ControlNet
+        );
+        if line.kind == crate::LineKind::ControlPoint {
+            for &p in &line.points {
+                let p = screen_line(project(p));
+                let mark = [
+                    [p[0] - 2.5, p[1] - 2.5],
+                    [p[0] + 2.5, p[1] - 2.5],
+                    [p[0] + 2.5, p[1] + 2.5],
+                    [p[0] - 2.5, p[1] + 2.5],
+                ];
+                if let Some(pdf) = pdf.as_deref_mut() {
+                    pdf.line(&mark, 1.2, [190, 80, 30], true);
+                } else {
+                    write!(
+                        svg,
+                        "<path d=\"{}\" fill=\"none\" stroke=\"#be501e\" stroke-width=\"1.2\" opacity=\"{}\"/>",
+                        format!(
+                            "M {} {} L {} {} L {} {} L {} {} Z",
+                            mark[0][0],
+                            mark[0][1],
+                            mark[1][0],
+                            mark[1][1],
+                            mark[2][0],
+                            mark[2][1],
+                            mark[3][0],
+                            mark[3][1]
+                        ),
+                        options.opacity
+                    )
+                    .unwrap();
+                }
+            }
+            continue;
+        }
+        let width = if matches!(
+            line.kind,
+            crate::LineKind::TrimBoundary | crate::LineKind::Boundary | crate::LineKind::Silhouette
+        ) {
             1.5
         } else {
             0.8
@@ -486,7 +546,7 @@ pub(crate) fn render_scene(
             let a = project(chord[0]);
             let b = project(chord[1]);
             let mut hidden = Vec::new();
-            if options.opacity == 1. {
+            if options.occlude_lines && !edit && options.opacity == 1. {
                 for t in &mesh.triangles {
                     if let Some(interval) =
                         crate::lines::hidden_interval(a, b, t.map(|i| projected[i]), bias)

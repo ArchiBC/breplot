@@ -6,6 +6,10 @@ pub enum LineKind {
     IsoU,
     IsoV,
     TrimBoundary,
+    Boundary,
+    Silhouette,
+    ControlNet,
+    ControlPoint,
 }
 #[derive(Clone, Debug)]
 pub struct SurfaceLine {

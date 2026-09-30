@@ -21,6 +21,10 @@ if ($LASTEXITCODE -ne 0) { throw 'Surface data WASM compilation failed.' }
 New-Item -ItemType Directory -Force -Path (Join-Path $moduleRoot 'target') | Out-Null
 & cargo run --manifest-path $manifest --example mesh -- (Join-Path $moduleRoot 'target\meshes.json')
 if ($LASTEXITCODE -ne 0) { throw 'Surface mesh demonstration failed.' }
+& cargo test --manifest-path $manifest --test display
+if ($LASTEXITCODE -ne 0) { throw 'B-Rep display tests failed.' }
+& cargo run --manifest-path $manifest --example display -- (Join-Path $moduleRoot 'target')
+if ($LASTEXITCODE -ne 0) { throw 'B-Rep display demonstration failed.' }
 $displayMode = if ($VectorSurfaces) { 'vector' } else { 'hybrid' }
 if (-not $VectorSurfaces) { & (Join-Path $PSScriptRoot 'build-display-assets.ps1') }
 & typst compile --input "surface-output=$displayMode" --root $moduleRoot (Join-Path $moduleRoot 'main.typ') (Join-Path $moduleRoot 'main.pdf')

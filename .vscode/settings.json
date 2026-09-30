@@ -1,4 +1,3 @@
 {
-  "tinymist.preview.refresh": "onSave",
-  "tinymist.typstExtraArgs": ["--input=quality=cached"]
+  "tinymist.preview.refresh": "onSave"
 }

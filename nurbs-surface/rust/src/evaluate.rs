@@ -54,7 +54,7 @@ impl KnotAxis {
     }
 
     /// Local Cox-de Boor recurrence with derivative propagated by the product rule.
-    fn basis(&self, span: usize, t: f64) -> Vec<[f64; 2]> {
+    pub(crate) fn basis(&self, span: usize, t: f64) -> Vec<[f64; 2]> {
         let p = self.degree();
         let k = self.knots();
         let mut values = vec![[0.0; 2]; p + 1];
@@ -108,14 +108,28 @@ impl NurbsSurface {
             }
         }
         let mut h = [[0.0; 4]; 3];
+        let mut position = [0.0; 3];
+        // Local coordinates avoid subtracting two large homogeneous positions
+        // in rational derivatives, especially on a collapsed boundary row.
+        let origin = self.control_point(first_u, first_v).unwrap();
+        let mut derivative_scale = [0.0; 2];
+        let mut local_scale = 0.0_f64;
         for (i, a) in bu.iter().enumerate() {
             for (j, b) in bv.iter().enumerate() {
                 let point = self.control_point(first_u + i, first_v + j).unwrap();
+                local_scale = local_scale.max(norm(sub(point, origin)));
                 let w = self.weight(first_u + i, first_v + j).unwrap() / scale;
                 let coefficients = [a[0] * b[0] * w, a[1] * b[0] * w, a[0] * b[1] * w];
+                for c in 0..3 {
+                    position[c] += coefficients[0] * point[c];
+                }
                 for d in 0..3 {
                     for c in 0..3 {
-                        h[d][c] += coefficients[d] * point[c];
+                        h[d][c] += coefficients[d] * (point[c] - origin[c]);
+                        if d > 0 {
+                            derivative_scale[d - 1] +=
+                                (coefficients[d] * (point[c] - origin[c])).abs();
+                        }
                     }
                     h[d][3] += coefficients[d];
                 }
@@ -128,17 +142,29 @@ impl NurbsSurface {
             ));
         }
         // doc:quotient:start
-        let point = std::array::from_fn(|c| h[0][c] / h[0][3]);
-        let du = std::array::from_fn(|c| (h[1][c] - point[c] * h[1][3]) / h[0][3]);
-        let dv = std::array::from_fn(|c| (h[2][c] - point[c] * h[2][3]) / h[0][3]);
+        let relative: [f64; 3] = std::array::from_fn(|c| h[0][c] / h[0][3]);
+        // Preserve the established position evaluation and its seam symmetry;
+        // only the ill-conditioned derivative subtraction uses local coordinates.
+        let point = std::array::from_fn(|c| position[c] / h[0][3]);
+        let du = std::array::from_fn(|c| (h[1][c] - relative[c] * h[1][3]) / h[0][3]);
+        let dv = std::array::from_fn(|c| (h[2][c] - relative[c] * h[2][3]) / h[0][3]);
         // doc:quotient:end
         if [point, du, dv].iter().flatten().any(|x| !x.is_finite()) {
             return Err(DataError::new("evaluation", "point or derivative overflow"));
         }
-        let normal = unit(du).zip(unit(dv)).and_then(|(a, b)| {
-            let n = cross(a, b);
-            (norm(n) > 64.0 * f64::EPSILON).then(|| unit(n)).flatten()
-        });
+        let us = self.u().knots()[spans[0] + 1] - self.u().knots()[spans[0]];
+        let vs = self.v().knots()[spans[1] + 1] - self.v().knots()[spans[1]];
+        let reliable = norm(du)
+            > 128.0 * f64::EPSILON * (derivative_scale[0] / h[0][3]).max(local_scale / us)
+            && norm(dv)
+                > 128.0 * f64::EPSILON * (derivative_scale[1] / h[0][3]).max(local_scale / vs);
+        let normal = reliable
+            .then(|| unit(du).zip(unit(dv)))
+            .flatten()
+            .and_then(|(a, b)| {
+                let n = cross(a, b);
+                (norm(n) > 64.0 * f64::EPSILON).then(|| unit(n)).flatten()
+            });
         Ok(SurfaceSample {
             point,
             du,

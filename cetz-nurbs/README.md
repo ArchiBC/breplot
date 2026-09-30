@@ -46,7 +46,7 @@
 
 - 支持 1–8 次曲线，控制点为数值 `(x, y)` 或 `(x, y, z)`，默认使用完整重复节点向量，也可用 `knot_format: "rhino"`。支持非夹持节点与不连续节点区间；权重必须为正，省略时全为 1。
 - 非有理 1–3 次段按节点区间精确转三次 Bézier（浮点计算误差除外）。一般有理段和更高次段使用自适应三次近似，`tolerance` 在世界坐标中检查多个采样点，不是严格全局误差界。CeTZ 后续缩放会同时缩放误差。
-- Rust 内核只依赖 `brepkit-math`、Serde 和 WASM 协议，不依赖 breplot、STEP、拓扑、HLR 或 PNG。breplot 以禁用 `plugin` feature 的方式复用同一内核。
+- Rust 内核只依赖 `brepkit-math`、Serde 和 WASM 协议，不依赖 breplot、STEP、拓扑、HLR 或 PNG。原生 Rust 调用方可禁用 `plugin` feature 复用内核。
 - 固定的 `brepkit-math 3.4.18` 清单标注 `AGPL-3.0-only`，CeTZ 0.5.2 标注 `LGPL-3.0-or-later`。本次为本地拆分验证，未发布；公开分发时仍需确定项目自身许可证和依赖许可方案。
 
 演示入口为 `main.typ`（`examples/demo.typ` 保留转发入口）；包含有理圆弧、三维旋转、画布样式继承、控制点锚点、重复节点导致的断开曲线、8 个独立控制点整圆和三次周期曲线。

@@ -309,7 +309,25 @@ impl TrimRegion {
             .collect()
     }
     fn clip(&self, triangle: [P; 3]) -> Vec<Vec<P>> {
+        let original = triangle;
         let triangle = triangle.map(|p| self.normalized(p));
+        // Interior cells need no ear-diagonal splitting. A hole completely
+        // inside the cell is detected by its vertex, not only edge crossings.
+        let touches = self.rings.iter().any(|r| {
+            (0..r.len()).any(|i| {
+                let a = r[i];
+                let b = r[(i + 1) % r.len()];
+                (0..3).all(|j| orient(triangle[j], triangle[(j + 1) % 3], a) >= -EPS)
+                    || (0..3).any(|j| intersects(a, b, triangle[j], triangle[(j + 1) % 3]))
+            })
+        });
+        if !touches {
+            return if self.contains(original[0]) {
+                vec![original.to_vec()]
+            } else {
+                vec![]
+            };
+        }
         let mut fragments = Vec::new();
         for outer in &self.outer_triangles {
             let mut p = triangle.to_vec();
@@ -374,17 +392,36 @@ impl NurbsSurface {
                         ));
                     }
                     let start = result.vertices.len();
+                    let center: P =
+                        std::array::from_fn(|c| uv.iter().map(|p| p[c]).sum::<f64>() / 3.0);
                     for p in uv {
                         let sample = self.evaluate_in_spans(p, spans)?;
+                        // A singular point can have different limiting normals
+                        // from different parameter directions (e.g. a cone tip).
+                        // Keep its exact point and approach from this triangle.
+                        let normal = if sample.normal.is_some() {
+                            sample.normal
+                        } else {
+                            self.evaluate_in_spans(
+                                std::array::from_fn(|c| p[c] + (center[c] - p[c]) * 1e-6),
+                                spans,
+                            )?
+                            .normal
+                        };
                         result.vertices.push(MeshVertex {
                             uv: p,
                             point: sample.point,
-                            normal: sample.normal,
+                            normal,
                             spans,
                         });
                     }
                     let points: [_; 3] = std::array::from_fn(|i| result.vertices[start + i].point);
-                    if norm(cross(sub(points[1], points[0]), sub(points[2], points[0]))) == 0. {
+                    let ab = sub(points[1], points[0]);
+                    let ac = sub(points[2], points[0]);
+                    let edge_scale = norm(ab).max(norm(ac)).max(norm(sub(points[2], points[1])));
+                    // Collapsed NURBS boundaries may differ by roundoff after
+                    // evaluation. They still have no stable triangle area.
+                    if norm(cross(ab, ac)) <= 64.0 * f64::EPSILON * edge_scale * edge_scale {
                         result.degenerate_triangles += 1;
                         continue;
                     }

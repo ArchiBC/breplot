@@ -1,4 +1,4 @@
-//! NURBS geometry shared by the standalone CeTZ plugin and STEP edge display.
+//! NURBS geometry for the standalone CeTZ plugin and native Rust callers.
 pub mod bezier;
 pub mod construct;
 pub mod display;

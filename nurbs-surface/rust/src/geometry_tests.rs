@@ -1,4 +1,17 @@
 use crate::*;
+#[test]
+fn nearly_collapsed_boundary_does_not_invent_a_normal() {
+    let s = NurbsSurface::bezier(
+        vec![
+            vec![[10., 20., 30.], [10., 21., 31.]],
+            vec![[10. + 2e-15, 20., 30.], [11., 21., 31.]],
+        ],
+        None,
+    )
+    .unwrap();
+    assert!(s.evaluate(0.37, 0.).unwrap().normal.is_none());
+    assert!(s.evaluate(0.37, 0.2).unwrap().normal.is_some());
+}
 fn close(a: [f64; 3], b: [f64; 3]) {
     for i in 0..3 {
         assert!((a[i] - b[i]).abs() < 1e-10, "{a:?} != {b:?}");
